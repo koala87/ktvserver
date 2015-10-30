@@ -42,7 +42,7 @@ namespace yiqiding { namespace ktv {
 		DEFAULT_LOG_REQUEST					=	0,
 		DEFAULT_CONSOLE_HIDE				=	1,
 		DEFAULT_SERVER_VALIDATE				=	0,
-		DEFAULT_KTV_SID						=	0,
+
 		DEFAULT_CONTROL_ENABLE				=	0,
 		DEFAULT_INFOSERVER					=	0,
 
@@ -53,7 +53,7 @@ namespace yiqiding { namespace ktv {
 
 	};
 
-
+	static const char DEFAULT_KTV_SID[]				=	"0";
 	static const char DEFAULT_SERVER_LOG_FILE[]		=	"ktvserver.log";
 	static const char DEFAULT_INFO_APK_PATH[]		=	"install/KTVBox.apk";
 	static const char DEFAULT_INFO_ROMURL[]			=	"install/update.zip";
@@ -140,7 +140,7 @@ namespace yiqiding { namespace ktv {
 		std::string			_city;
 		std::string			_appServerUrl;
 		bool				_validate;
-		int					_sid;
+		std::string			_sid;
 		bool				_control_enable;//ÖÐ¿Ø
 		bool				_infoserver;
 		std::string			_caraVersion;
@@ -246,7 +246,7 @@ namespace yiqiding { namespace ktv {
 		inline const std::string &  getAddress()			const	{ return _address;}
 		inline const std::string& getAppServerUrl()			const   { return _appServerUrl;}
 		inline bool getValidate()							const	{ return _validate;}
-		inline int getSid()									const	{ return _sid;}
+		inline const std::string getSid()					const	{ return _sid;}
 		inline bool getControlenabled()						const	{ return _control_enable;}
 #ifdef LOG_REQUEST
 		inline bool GetRequestInFile()						const	{ return _req_file;}
@@ -292,7 +292,7 @@ namespace yiqiding { namespace ktv {
 		inline void setErpPassword(const std::string &password)					{_erp_password = password;}
 		inline void setErpSchema(const std::string &schema)						{_erp_schema = schema;}
 		inline void setErpPort(int port)										{_erp_port = port;}
-		inline void setSid(int sid)												{_sid = sid;}
+		inline void setSid(const std::string &sid)												{_sid = sid;}
 		inline void setTelNet(yiqiding::net::tel::ServerSend *srv)										{_srv = srv;}
 		inline void setControlenabled( bool enabled)							{ _control_enable = enabled;}
 		inline void setInfoServer(bool infoserver)								{_infoserver = infoserver;}

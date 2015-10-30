@@ -211,7 +211,7 @@ int main(int argc, const char* argv[]) {
 			ktv_server->setControlenabled(ktv_conf["local"].getInt("controlenabled" , yiqiding::ktv::DEFAULT_CONTROL_ENABLE));
 			ktv_server->initMicrophoneService();
 
-			int sid = ktv_conf["local"].getInt("sid" , yiqiding::ktv::DEFAULT_KTV_SID);
+			std::string sid = ktv_conf["local"].getValue("sid" , yiqiding::ktv::DEFAULT_KTV_SID);
 			ktv_server->setSid(sid);
 			ktv_server->setTelNet(telnet_server.get());
 

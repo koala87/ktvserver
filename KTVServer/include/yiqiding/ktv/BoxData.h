@@ -17,7 +17,7 @@ namespace yiqiding { namespace ktv{
 	const std::string data_dir = "./zip";
 	
 	struct ServerInfo{
-	 int		 ktv_sid;
+	 std::string ktv_sid;
 	 std::string ktv_name;
 	 std::string server_serial;
 	 std::string server_ver;

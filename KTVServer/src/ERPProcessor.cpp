@@ -227,7 +227,7 @@ void ERPProcessor::processControlRoom() {
 		Singleton<GameReward>::getInstance()->cancelfromboxid(box_id);
 		Singleton<GameReward2>::getInstance()->updateStatus(box_id);
 		_server->getConnectionManager()->setBoxSongs(box_id , "");
-
+    Logger::get("server")->log("open boxid 1: " + utility::toString(box_id), Logger::NORMAL);
 	try{
 		Packet back_pack(_pac->getHeader());
 		{
@@ -252,7 +252,7 @@ void ERPProcessor::processControlRoom() {
 		setOutPack(&back_pack);
 	}
 	catch(...){}
-
+	Logger::get("server")->log("open boxid 2: " + utility::toString(box_id), Logger::NORMAL);
 	try{
 		//open`
 		if(room && !status)
@@ -264,6 +264,7 @@ void ERPProcessor::processControlRoom() {
 		}
 		// Send to Box
 		conn_man->sendToBox(box_id, &out_pack);
+		Logger::get("server")->log("open boxid 3: " + utility::toString(box_id), Logger::NORMAL);
 		setAttPack(&out_pack , box_id);
 
 	

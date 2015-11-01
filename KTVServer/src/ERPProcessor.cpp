@@ -530,8 +530,7 @@ void ERPProcessor::processUploadBoxInfo()
 						std::string msg = root.toStyledString();
 						pack.setPayload(msg.c_str() , msg.length());
 						pack.dispatch(conn);
-						
-
+						setOutPack(&pack);
 				} catch (...) {}
 				conn->release();
 				

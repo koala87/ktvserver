@@ -121,6 +121,7 @@ void Server::onConnectionLost(yiqiding::net::tcp::async::Connection* conn) {
 		if (conn->getListenPort() == _port_audio){
 			int ip = inet_addr(conn->getAddress().c_str());
 			getConnectionManager()->removeMusicConn(ip);
+			Logger::get("server")->log("Music Connection Lost", Logger::NORMAL);
 		}
 		break;
 	}		

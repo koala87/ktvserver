@@ -167,7 +167,7 @@ namespace yiqiding { namespace ktv { namespace packet {
 		
 		// KTVApp	----> KTVServer
 		APP_REQ_TURN_MESSAGE		=	90001,
-		APP_REQ_TURN_MESSAGE2       =   90005,
+		
 		APP_REQ_VALIDATE_CODE		=	50001,
 		APP_REQ_SCROLL_INFO			=	91000,
 		APP_REQ_RES_URL_INFO		=	90003,
@@ -228,8 +228,8 @@ namespace yiqiding { namespace ktv { namespace packet {
 
 		KTV_NOTIFY_BOX_LOST_APP		=   22000,
 		BOX_NOTIFY_KTV_LOST_APP		=   33000,
-
-		
+		APP_REQ_TURN_MESSAGE2       =   90005,
+		APP_REQ_BOX_ID				=   30300,
 	};
 
 	/// Packet class

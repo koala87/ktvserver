@@ -304,6 +304,7 @@ namespace yiqiding { namespace ktv { namespace extended {
 		void			setBoxCode(uint32_t box_id , const std::string &code);
 		int				getBoxFromCode(const std::string &code);
 		std::string     getBoxCode(uint32_t box_id);
+		std::string		getBoxCodeFromIp(std::string ip);
 		// ERP
 		void			updateERP(ERPRole role, size_t conn_id);
 		void			revokeERP(size_t conn_id);

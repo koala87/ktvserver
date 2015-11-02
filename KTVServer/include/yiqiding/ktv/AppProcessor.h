@@ -21,7 +21,7 @@ namespace yiqiding { namespace ktv {
 		
 		void processScrollInfo();
 		void processTurnMsgToBox();
-		void processTurnMsgToBox2();
+		
 		void processReqUrl();
 		void processOtherStatus();
 
@@ -30,6 +30,10 @@ namespace yiqiding { namespace ktv {
 
 		/*void processCheckTempCode();*/
 		inline AppConnection*	getConnection()	{ return (AppConnection*)_conn; }
+
+		// new added
+		void processTurnMsgToBox2();
+		void processReqBoxCode();
 	};
 }
 }

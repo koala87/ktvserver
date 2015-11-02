@@ -84,6 +84,7 @@ void AppProcessor::onReceivePacket() {
 	case packet::APP_REQ_RES_URL_INFO:			processReqUrl();		break;
 	case packet::BOX_REQ_OTHER_STATUS:			processOtherStatus();	break;
 	/*case packet::APP_REQ_SCROLL_INFO:			processScrollInfo();	break; using lua script*/
+	case packet::APP_REQ_BOX_ID:				processReqBoxCode();	break;
 	default:
 		sendErrorJsonMessage(packet::ERROR_REQ_NOT_SUPPORT , "Request not supported");
 	}
@@ -510,5 +511,36 @@ void AppProcessor::processReqUrl()
 	catch(...)
 	{
 		utility::Logger::get("server")->log("processReqUrl app:" + toString(_pac->getDeviceID()) + "lost connection" , Logger::WARNING);
+	}
+}
+
+void AppProcessor::processReqBoxCode(){
+	std::string str(_pac->getPayload() , _pac->getLength());
+	Json::Reader reader;
+	Json::Value root;
+	if(!reader.parse(str , root))
+		return sendErrorJsonMessage(packet::ERROR_FORMAT ,  "Invalid json string");
+
+	if ( !root.isMember("ip") || !root["ip"].isString() )
+		return sendErrorJsonMessage(packet::ERROR_FORMAT  , "Missing ip");
+
+	std::string ip = root["ip"].asString();
+
+	std::string strCode = _server->getConnectionManager()->getBoxCodeFromIp(ip);
+	if(strCode == "")
+		return sendErrorJsonMessage(packet::ERROR_CODE_NOT_EXIST , "IP may be wrong!");	
+	try
+	{
+		Packet back(_pac->getHeader());
+		Json::Value newroot;
+		newroot["id"] = strCode;
+		std::string msg = newroot.toStyledString();
+		back.setPayload(msg.c_str() , msg.length());
+		back.dispatch(_conn);
+		setOutPack(&back);
+	}
+	catch(...)
+	{
+		utility::Logger::get("server")->log("processReqBoxCode:" + toString(_pac->getDeviceID()) + "lost connection" , Logger::WARNING);
 	}
 }

@@ -864,3 +864,27 @@ void ConnectionManager::cleanAppBoxMappingByBoxId(uint32_t box_id){
 		//Logger::get("server")->log("clean app list by box id : " + toString(box_id) , Logger::NORMAL);
 	}
 }
+
+//ip format: xxx.xxx.xxx.xxx
+std::string	ConnectionManager::getBoxCodeFromIp(std::string ip){
+	MutexGuard lock1(_box_conn_mutex);
+	MutextReader lock(_codes_mutex);
+
+	uint32_t box_id= -1;
+	std::string strCode = "";
+	for(auto it=_box_conn.begin();it!=_box_conn.end();it++){
+		if(it->second->getIP() == ip){
+			box_id = it->first;
+			break;
+		}
+	}
+	Logger::get("server")->log("[the third app] get box id : " + toString(box_id) + " from ip : " + toString(ip) , Logger::NORMAL);
+	if(box_id != -1){
+		auto it1 = _codes.find(box_id);
+		if(it1 != _codes.end()){
+			strCode = it1->second;
+		}
+	}
+	Logger::get("server")->log("[the third app] get box strCode : " + strCode + " from box id : " + toString(box_id) , Logger::NORMAL);
+	return strCode;
+}

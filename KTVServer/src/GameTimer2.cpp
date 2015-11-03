@@ -291,12 +291,18 @@ bool GameTimer2::scores(int boxid , double score)
 	
 	if(_accepts.count(boxid) == 0)
 		return false;
+	_accepts.erase(boxid);
 	if(_results.empty())
 	{
 		_state = GAME2_UPLOAD;
-		start(15 * 1000 , WHEEL_ONESHOT);
+		// send score immediately if all the scores are uploaded
+		if(_accepts.empty()){
+			start(1, WHEEL_ONESHOT);
+		}else{
+			start(15 * 1000 , WHEEL_ONESHOT);
+		}
 	}
-	_accepts.erase(boxid);
+	
 	BoxResult res = {score , boxid};
 	_results.push_back(res);
 	return true;

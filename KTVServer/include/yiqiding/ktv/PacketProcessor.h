@@ -62,6 +62,7 @@ namespace yiqiding { namespace ktv { namespace packet {
 	public:
 		void sendErrorMessage(const std::string& err_msg);
 		void sendErrorJsonMessage(int code ,  const std::string &err_msg);
+		void sendJsonMessage(const Json::Value &val);
 		inline void	send(const Packet* pack)	{ pack->dispatch(_conn); };
 		Processor(Server* server, KTVConnection* conn, Packet* pac , const std::string &ip , int port) : _server(server), _conn(conn), _pac(pac) , _ip(ip) , _port(port){
 

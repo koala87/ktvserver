@@ -532,12 +532,9 @@ void AppProcessor::processReqBoxCode(){
 	try
 	{
 		Packet back(_pac->getHeader());
-		Json::Value newroot;
-		newroot["id"] = strCode;
-		std::string msg = newroot.toStyledString();
-		back.setPayload(msg.c_str() , msg.length());
-		back.dispatch(_conn);
-		setOutPack(&back);
+		Json::Value root;
+		root["id"] = strCode;
+		return sendJsonMessage(root);
 	}
 	catch(...)
 	{

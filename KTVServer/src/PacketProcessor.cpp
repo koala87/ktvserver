@@ -71,3 +71,20 @@ void Processor::sendErrorJsonMessage(int code , const std::string &err_msg)
 
 	setOutPack(&out_pack);
 }
+
+void Processor::sendJsonMessage(const Json::Value &val)
+{
+	Json::Value root;
+	Json::Value value; 
+	root["result"] = val;
+	root["status"] = 0;
+	root["error"] = "";
+
+	std::string json = root.toStyledString();
+	Packet out_pack(_pac->getHeader());
+	out_pack.setPayload(json.c_str() , json.length());
+
+	out_pack.dispatch(_conn);
+
+	setOutPack(&out_pack);
+}

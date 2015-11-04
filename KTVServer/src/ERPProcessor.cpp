@@ -225,9 +225,13 @@ void ERPProcessor::processControlRoom() {
 	//when close suc, clear songs
 	if(confirm && !room )
 		Singleton<GameReward>::getInstance()->cancelfromboxid(box_id);
+	// ERP close Box, may send multiple times
+	if(confirm && status && !room){
 		Singleton<GameReward2>::getInstance()->updateStatus(box_id);
-		_server->getConnectionManager()->setBoxSongs(box_id , "");
-    Logger::get("server")->log("open boxid 1: " + utility::toString(box_id), Logger::NORMAL);
+		//Logger::get("server")->log("[reward debug] close box" , Logger::WARNING);
+	}
+	_server->getConnectionManager()->setBoxSongs(box_id , "");
+
 	try{
 		Packet back_pack(_pac->getHeader());
 		{
@@ -252,7 +256,6 @@ void ERPProcessor::processControlRoom() {
 		setOutPack(&back_pack);
 	}
 	catch(...){}
-	Logger::get("server")->log("open boxid 2: " + utility::toString(box_id), Logger::NORMAL);
 	try{
 		//open`
 		if(room && !status)
@@ -264,7 +267,6 @@ void ERPProcessor::processControlRoom() {
 		}
 		// Send to Box
 		conn_man->sendToBox(box_id, &out_pack);
-		Logger::get("server")->log("open boxid 3: " + utility::toString(box_id), Logger::NORMAL);
 		setAttPack(&out_pack , box_id);
 
 	

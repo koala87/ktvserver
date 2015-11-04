@@ -85,6 +85,7 @@ void AppProcessor::onReceivePacket() {
 	case packet::BOX_REQ_OTHER_STATUS:			processOtherStatus();	break;
 	/*case packet::APP_REQ_SCROLL_INFO:			processScrollInfo();	break; using lua script*/
 	case packet::APP_REQ_BOX_ID:				processReqBoxCode();	break;
+	case packet::REQ_SELF_CHECK:				processSelfCheck();		break;
 	default:
 		sendErrorJsonMessage(packet::ERROR_REQ_NOT_SUPPORT , "Request not supported");
 	}
@@ -221,8 +222,8 @@ void AppProcessor::processTurnMsgToBox2()
 
 		// update appId and boxid mapping
 		_server->getConnectionManager()->updateAppBoxMapping(getConnection()->getAppID(), boxid);
-		//Logger::get("server")->log("update app/box mapping: appId 90005: " + toString(getConnection()->getAppID()) + " : boxId : " + toString(boxid), 
-		//	Logger::NORMAL);
+		Logger::get("server")->log("update app/box mapping: appId 90005: " + toString(getConnection()->getAppID()) + " : boxId : " + toString(boxid), 
+			Logger::NORMAL);
 	}
 	catch (const extended::BoxConnectionLost &) {
 		confirm = false;
@@ -540,4 +541,12 @@ void AppProcessor::processReqBoxCode(){
 	{
 		utility::Logger::get("server")->log("processReqBoxCode:" + toString(_pac->getDeviceID()) + "lost connection" , Logger::WARNING);
 	}
+}
+
+void AppProcessor::processSelfCheck(){
+	// check database connection
+	// check all connections
+	// check box connections
+	// check ERP connections
+	// return result
 }

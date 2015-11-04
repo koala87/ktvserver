@@ -1,6 +1,8 @@
 #include "yiqiding/ktv/GameReward2.h"
+#include "yiqiding/utility/Logger.h"
 
 using namespace yiqiding::ktv;
+using namespace yiqiding::utility;
 
 Json::Value Record2::get()
 {
@@ -41,6 +43,7 @@ bool Reward2::add(yiqiding::ktv::Server *s ,unsigned int boxid ,
 
 	start(_remaintime * 1000 ,yiqiding::time::WHEEL_ONESHOT);
 	notifyAddReward2();
+	//Logger::get("server")->log("[reward debug] : add boxid" + toString(boxid) , Logger::WARNING);
 	return true;
 }
 
@@ -50,6 +53,7 @@ bool Reward2::ready(unsigned int boxid)
 	if(_sets.count(boxid))
 		return false;
 	_sets.insert(boxid);
+	//Logger::get("server")->log("[reward debug] : ready boxid:" + toString(boxid) , Logger::WARNING);
 	return true;
 }
 
@@ -66,6 +70,7 @@ bool Reward2::cancel(unsigned int boxid)
 	stop();
 	
 	alertEndReward2(1);
+	Logger::get("server")->log("[reward debug] : cancel" , Logger::WARNING);
 
 	return true;
 }
@@ -322,8 +327,9 @@ void Reward2::alertEndReward2(int type)
 
 	for each(auto k in _sets)
 	{
-			try {
+		try {
 			_s->getConnectionManager()->sendToBox(k , &out);
+			//utility::Logger::get("server")->log("[reward debug] send alert to boxid:" + utility::toString(k) + " type:" + utility::toString(type), Logger::WARNING);
 		} catch (...) {
 			;
 		}
@@ -344,6 +350,7 @@ void Reward2::updateStatus()
 	stop();
 	_status = State_RESUMED;
 	alertEndReward2(0);
+	//Logger::get("server")->log("[reward debug] : updateStatus", Logger::WARNING);
 }
 
 

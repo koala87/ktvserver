@@ -2757,9 +2757,7 @@ void BoxProcessor::processGetAccountsList()
 {
 	packet::Packet out(_pac->getHeader());
 	std::string msg = _server->getAllAppInfo();
-	Logger::get("server")->log("app info list" + msg, Logger::NORMAL);
 	try {
-		//_server->getConnectionManager()->sendDataToBox(_pac->getDeviceID(), msg.c_str(), msg.length());
 		out.setPayload(msg.c_str() , msg.length());
 		out.dispatch(_conn);
 		Logger::get("server")->log("send accounts data to box; data : " + msg, Logger::NORMAL);

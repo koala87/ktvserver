@@ -34,6 +34,8 @@ namespace yiqiding { namespace ktv {
 		// new added
 		void processTurnMsgToBox2();
 		void processReqBoxCode();
+
+		void processSelfCheck();
 	};
 }
 }

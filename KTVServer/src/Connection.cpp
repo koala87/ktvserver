@@ -757,7 +757,6 @@ void ConnectionManager::sendDataToBox(uint32_t box_id, const char* data, uint32_
 		}
 		conn->release();
 	}
-	//Logger::get("server")->log("[microphone] debug 09");
 }
 
 void ConnectionManager::updateAppBoxMapping(uint32_t app_id, uint32_t box_id){
@@ -791,15 +790,15 @@ void ConnectionManager::updateAppBoxMapping(uint32_t app_id, uint32_t box_id){
 }
 
 uint32_t ConnectionManager::getBoxIdFromAppId(uint32_t app_id){
-	Logger::get("server")->log("[microphone] into getBoxIdFromAppId");
+	Logger::get("server")->log("[microphone] into getBoxFromAppId", Logger::NORMAL);
 	MutexGuard lock(_app_box_map_mutex);
 
 	auto ptr = _app_box_map.find(app_id);
 	if (ptr != _app_box_map.end()){
-		//Logger::get("server")->log("get boxId : " + toString(ptr->second) + " by " + toString(app_id), Logger::NORMAL);
+		Logger::get("server")->log("get boxId : " + toString(ptr->second) + " by " + toString(app_id), Logger::NORMAL);
 		return ptr->second;
 	} else {
-		//Logger::get("server")->log("get boxId failed! : appId:" + toString(app_id), Logger::NORMAL);
+		Logger::get("server")->log("get boxId failed! : appId:" + toString(app_id), Logger::NORMAL);
 		return -1;
 	}
 }

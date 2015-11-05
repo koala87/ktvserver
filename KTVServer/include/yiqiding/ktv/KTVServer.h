@@ -311,6 +311,16 @@ namespace yiqiding { namespace ktv {
 
 		// Show TelNet Info
 		 int showAllConnection(yiqiding::net::tel::ServerSend *srv);
+
+		 // Debug info
+		 int showBoxConnection(yiqiding::net::tel::ServerSend * srv);
+		 int showAppConnection(yiqiding::net::tel::ServerSend * srv);
+		 int showMusicConnection(yiqiding::net::tel::ServerSend * srv);
+		 int showERPConnection(yiqiding::net::tel::ServerSend * srv);
+		 int showAppBoxMapping(yiqiding::net::tel::ServerSend * srv);
+		 int showAccountInfo(yiqiding::net::tel::ServerSend * srv);
+		 int uploadTestFile(yiqiding::net::tel::ServerSend * srv);
+
 		 int showAllVirtualConnection(yiqiding::net::tel::ServerSend *srv);
 		 int showServerInfo(yiqiding::net::tel::ServerSend *srv);
 		 int showRequset(yiqiding::net::tel::ServerSend *srv , int type , int id , int req , int top , bool sort);

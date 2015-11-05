@@ -146,6 +146,15 @@ int main(int argc, const char* argv[]) {
 			telnet_server.reset(new TelNetServer());
 			telnet_server->Start(tel_listen_port);
 			telnet_server->addFunc("sshowAllConnection" , (net::tel::ExeFunc)ktv::Server::sshowAllConnection, "show all connection to server\r\n" ,  ktv_server.get());
+			// add debug functions
+			telnet_server->addFunc("showBoxConnection" , (net::tel::ExeFunc)ktv::Server::sshowAllConnection, "show all box connections to server\r\n" ,  ktv_server.get());
+			telnet_server->addFunc("showAppConnection" , (net::tel::ExeFunc)ktv::Server::sshowAllConnection, "show all app connections to server\r\n" ,  ktv_server.get());
+			telnet_server->addFunc("showERPConnection" , (net::tel::ExeFunc)ktv::Server::sshowAllConnection, "show all erp connections to server\r\n" ,  ktv_server.get());
+			telnet_server->addFunc("showMusicConnection" , (net::tel::ExeFunc)ktv::Server::sshowAllConnection, "show app/box mapping\r\n" ,  ktv_server.get());
+			telnet_server->addFunc("showAccountInfo" , (net::tel::ExeFunc)ktv::Server::sshowAllConnection, "show app acounts info\r\n" ,  ktv_server.get());
+			telnet_server->addFunc("uploadTestFile" , (net::tel::ExeFunc)ktv::Server::sshowAllConnection, "upload test file\r\n" ,  ktv_server.get());
+			telnet_server->addFunc("showAppBoxMap" , (net::tel::ExeFunc)ktv::Server::sshowAllConnection, "show all connection to server\r\n" ,  ktv_server.get());
+
 			telnet_server->addFunc("sshowAllVirtualConnection" , (net::tel::ExeFunc)ktv::Server::sshowAllVirtualConnection , "show all virtual connection to server\r\n" ,  ktv_server.get());
 			telnet_server->addFunc("sshowServerInfo" , (net::tel::ExeFunc)ktv::Server::sshowServerInfo, "show Server info\r\n" ,  ktv_server.get());
 			telnet_server->addFunc("sshowVersion" , (net::tel::ExeFunc)ktv::Server::sshowVersion, "show current version\r\n");

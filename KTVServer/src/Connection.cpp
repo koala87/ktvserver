@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <ctime>
+#include <sstream>
 #include "yiqiding/ThreadW1Rn.h"
 #include "yiqiding/ktv/Connection.h"
 #include "yiqiding/utility/Logger.h"
@@ -824,6 +825,8 @@ void ConnectionManager::notifyBoxAppLost(uint32_t appId){
 	std::string msg = root.toStyledString();
 	pack.setPayload(msg.c_str(), msg.length());
 	sendToBox(boxId, &pack);
+	Logger::get("server")->log("[microphone] send notice appId:" + toString(appId) + "lost to boxId:" + toString(boxId),
+		Logger::NORMAL);
 }
 
 void ConnectionManager::cleanAppBoxMappingByAppId(uint32_t appId){
@@ -887,3 +890,95 @@ std::string	ConnectionManager::getBoxCodeFromIp(std::string ip){
 	Logger::get("server")->log("[the third app] get box strCode : " + strCode + " from box id : " + toString(box_id) , Logger::NORMAL);
 	return strCode;
 }
+
+int ConnectionManager::showBoxConnection(yiqiding::net::tel::ServerSend * srv){
+	MutexGuard lock(_box_conn_mutex);
+	MutextReader lock1(_codes_mutex);
+	
+	std::stringstream ss;
+	int cnt = 1;
+	for(auto it=_box_conn.begin();it!=_box_conn.end();it++){
+		std::string strCode("null");
+		auto it1 = _codes.find(it->first);
+		if(it1 != _codes.end()){
+			strCode = it1->second;
+		}
+		ss.width(4);
+		ss << "#" << cnt;
+		ss << " id:" << it->first << " code:" << strCode << " ip:" << it->second->getIP() 
+			<< " connection id:" << it->second->getConnectionID() << std::endl;
+		cnt++;
+	}
+	srv->teleSend(ss.str());
+	return 0;
+}
+
+int ConnectionManager::showAppConnection(yiqiding::net::tel::ServerSend * srv){
+	MutexGuard lock(_app_conn_mutex);
+	std::stringstream ss;
+	int cnt = 1;
+
+	for(auto it=_app_conn.begin();it!=_app_conn.end();it++){
+		ss.width(4);
+		ss << "#" << cnt;
+		ss << " id:" << it->first << " ip:" << "null"//<< it->second->getAddress()
+			<< " connection id:" << it->second->getConnectionID() << std::endl;
+		cnt++;
+	}
+	srv->teleSend(ss.str());
+	return 0;
+}
+
+int ConnectionManager::showERPConnection(yiqiding::net::tel::ServerSend * srv){
+	MutexGuard lock(_erp_conn_mutex);
+
+	std::stringstream ss;
+	int cnt = 1;
+	for(auto it=_erp_conn.begin();it!=_erp_conn.end();it++){
+		ss.width(4);
+		ss << "#" << cnt;
+		ss << " id:" << it->first << " ip:" << "null" << std::endl;//<< it->second->getAddress()
+			//<< " connection id:" << it->second->getConnectionID() << std::endl;
+		cnt++;
+	}
+	srv->teleSend(ss.str());
+	return 0;
+}
+
+int ConnectionManager::showAppBoxMapping(yiqiding::net::tel::ServerSend * srv){
+	MutexGuard lock(_app_box_map_mutex);
+	MutexGuard lock1(_box_apps_map_mutex);
+
+	std::stringstream ss;
+	ss << "App-Box map" << std::endl;
+	for(auto it=_app_box_map.begin();it!=_app_box_map.end();it++){
+		ss << "app " << it->first << " to " << "box " << it->second << std::endl;
+	}
+
+	ss << "Box-App map" << std::endl;
+	for(auto it=_box_apps_map.begin();it!=_box_apps_map.end();it++){
+		ss << "box " << it->first << " to " << "apps:";
+		for(auto it1=it->second.begin();it1!=it->second.end();it1++){
+			ss << " " << *it1;
+		}
+		ss << std::endl;
+	}
+	srv->teleSend(ss.str());
+	return 0;
+}
+int ConnectionManager::showMusicConnection(yiqiding::net::tel::ServerSend * srv){
+	MutexGuard lock(_music_conn_mutex);
+
+	std::stringstream ss;
+	int cnt = 1;
+	for(auto it=_music_conn.begin();it!=_music_conn.end();it++){
+		ss.width(4);
+		ss << "#" << cnt;
+		ss << " id:" << it->first << " ip:" << "null"//it->second->getAddress()
+			<< " connection id:" << it->second->getConnectionID() << std::endl;
+		cnt++;
+	}
+	srv->teleSend(ss.str());
+	return 0;
+}
+ 

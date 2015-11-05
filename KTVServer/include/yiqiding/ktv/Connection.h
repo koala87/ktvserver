@@ -342,6 +342,16 @@ namespace yiqiding { namespace ktv { namespace extended {
 
 		void            sendDataToBox(uint32_t box_id, const char* data, uint32_t len) const;
 		void			removeMusicConn(uint32_t ip);
+
+		int showBoxConnection(yiqiding::net::tel::ServerSend * srv);
+
+		int showAppConnection(yiqiding::net::tel::ServerSend * srv);
+	
+		int showERPConnection(yiqiding::net::tel::ServerSend * srv);
+
+		int showAppBoxMapping(yiqiding::net::tel::ServerSend * srv);
+		
+		int showMusicConnection(yiqiding::net::tel::ServerSend * srv);
 	};
 
 	// Exception

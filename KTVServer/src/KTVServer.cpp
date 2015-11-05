@@ -16,6 +16,7 @@
 #include "yiqiding/net/SocketPool.h"
 #include "yiqiding/ktv/KTVChallenge.h"
 #include "KTVKGame2.h"
+#include <sstream>
 using namespace yiqiding::ktv;
 using yiqiding::utility::Logger;
 
@@ -24,6 +25,9 @@ using yiqiding::utility::Logger;
 //////////////////////////////////////////////////////////////////////////
 // Serverd
 //////////////////////////////////////////////////////////////////////////
+
+// some debug function
+
 yiqiding::net::tcp::async::Connection* Server::alloc(yiqiding::net::tcp::async::SocketListener* listener, yiqiding::net::tcp::async::ConnectionPool* pool, yiqiding::net::tcp::async::EventListener* event_listener) {
 #ifdef USE_SECURE_SSL
 	if (listener->getPort() == _port_box || listener->getPort() == _safe_port_box)
@@ -130,6 +134,39 @@ void Server::onConnectionLost(yiqiding::net::tcp::async::Connection* conn) {
 int Server::showAllConnection(yiqiding::net::tel::ServerSend *srv)
 {
 	return net::tcp::async::Server::showAllConnection(srv);
+}
+
+int Server::showBoxConnection(yiqiding::net::tel::ServerSend * srv){
+	return getConnectionManager()->showBoxConnection(srv);	
+}
+
+int Server::showAppConnection(yiqiding::net::tel::ServerSend * srv){
+	return getConnectionManager()->showAppConnection(srv);	
+}
+
+int Server::showERPConnection(yiqiding::net::tel::ServerSend * srv){
+	return getConnectionManager()->showERPConnection(srv);	
+}
+int Server::showAppBoxMapping(yiqiding::net::tel::ServerSend * srv){
+	return getConnectionManager()->showAppBoxMapping(srv);	
+}
+
+int Server::showMusicConnection(yiqiding::net::tel::ServerSend * srv){
+	return getConnectionManager()->showMusicConnection(srv);	
+}
+
+int Server::showAccountInfo(yiqiding::net::tel::ServerSend * srv){
+	std::stringstream ss;
+	MutexGuard lock(_appinfo_mutex);
+
+	for(auto it=_appinfo.begin();it!=_appinfo.end();it++){
+		ss << it->first << " " << it->second << std::endl;
+	}
+	srv->teleSend(ss.str());
+}
+
+int Server::uploadTestFile(yiqiding::net::tel::ServerSend * srv){
+	srv->teleSend("TBD");
 }
 
 int Server::showAllKGame(yiqiding::net::tel::ServerSend *srv)

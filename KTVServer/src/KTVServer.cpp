@@ -125,7 +125,6 @@ void Server::onConnectionLost(yiqiding::net::tcp::async::Connection* conn) {
 		if (conn->getListenPort() == _port_audio){
 			int ip = inet_addr(conn->getAddress().c_str());
 			getConnectionManager()->removeMusicConn(ip);
-			Logger::get("server")->log("Music Connection Lost", Logger::NORMAL);
 		}
 		break;
 	}		
@@ -159,14 +158,48 @@ int Server::showAccountInfo(yiqiding::net::tel::ServerSend * srv){
 	std::stringstream ss;
 	MutexGuard lock(_appinfo_mutex);
 
-	for(auto it=_appinfo.begin();it!=_appinfo.end();it++){
-		ss << it->first << " " << it->second << std::endl;
+	if(_appinfo.empty()){
+		ss << "\tno accounts info\r\n";
+	}else{
+		for(auto it=_appinfo.begin();it!=_appinfo.end();it++){
+			ss << "\t" << it->first << " " << it->second << "\r\n";
+		}
 	}
+	ss << "\r\n";
 	srv->teleSend(ss.str());
+	return 0;
 }
 
-int Server::uploadTestFile(yiqiding::net::tel::ServerSend * srv){
-	srv->teleSend("TBD");
+int Server::uploadTestFile(yiqiding::net::tel::ServerSend * srv, std::string path, std::string name){
+	std::string msg;
+	bool ret = yiqiding::net::DistributeContent::UpLoadFile4(getDataServer() ,
+		name.c_str() , "application/octet-stream" , path.c_str() ,box::BoxInfoMan::getInstace()->getShopName());
+	if(!ret){
+		msg = "Upload file:" + name + " path:" + path + " to " + getDataServer() + " failed!\r\n";
+		srv->teleSend(msg.c_str());
+	}else{
+		msg = "Upload file:" + name + " path:" + path + " to " + getDataServer() + " success!\r\n";
+		srv->teleSend(msg.c_str());
+	}
+	return 0;
+}
+
+int Server::showAll(yiqiding::net::tel::ServerSend * srv){
+	srv->teleSend("ERP:\r\n");
+	getConnectionManager()->showERPConnection(srv);
+	srv->teleSend("Box:\r\n");
+	getConnectionManager()->showBoxConnection(srv);
+	srv->teleSend("App:\r\n");
+	getConnectionManager()->showAppConnection(srv);
+	srv->teleSend("Music:\r\n");
+	getConnectionManager()->showMusicConnection(srv);
+	srv->teleSend("Accounts:\r\n");
+	showAccountInfo(srv);
+	srv->teleSend("Mapping:\r\n");
+	showAppBoxMapping(srv);
+	srv->teleSend("Upload:\r\n");
+	uploadTestFile(srv, "test.txt", "test.txt");
+	return 0;
 }
 
 int Server::showAllKGame(yiqiding::net::tel::ServerSend *srv)
@@ -186,8 +219,6 @@ int Server::showAllVirtualConnection(yiqiding::net::tel::ServerSend *srv)
 int Server::showServerInfo(yiqiding::net::tel::ServerSend *srv)
 {
 	std::ostringstream out;
-
-
 
 	out <<"TIME:" << yiqiding::utility::getDateTime(_startTime) << "\r\n"
 		<< "INI:" << getIniListeningPort()<<"\r\n"
@@ -246,9 +277,6 @@ int Server::showServerInfo(yiqiding::net::tel::ServerSend *srv)
 			out << "boxid:"<< n.first << " Id: " << n.second->getID() << "\r\n";
 		}
 
-
-	
-
 	srv->teleSend(out.str());
 	return 0;
 }
@@ -285,7 +313,6 @@ Server::Server(size_t num_io_threads, size_t num_min_worker_threads, size_t num_
 Server::~Server() {}
 
 void Server::initMicrophoneService() {
-	Logger::get("server")->log("start microphone service ...", Logger::NORMAL);
 	_microphone_service = new KtvMicrophoneService(&_conn_man); 
 }
 

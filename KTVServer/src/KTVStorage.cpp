@@ -41,8 +41,6 @@ bool KTVStorageClientHandler::processUpLoad(StoragePacket &pac ,const std::strin
 {
 	std::string result;
 	std::string mime = "application/octet-stream";
-	
-	yiqiding::utility::Logger::get("server")->log("[FTP upload] type:" + utility::toString(pac.getContent()) + " path:" + path + " fname:" + filename);
 
 	std::string name = filename;
 
@@ -74,7 +72,6 @@ bool KTVStorageClientHandler::processUpLoad(StoragePacket &pac ,const std::strin
 	else if (pac.getContent() == TYPE_BOX_LOG){
 		name = "box_log" + generateName(name);
 	}
-	yiqiding::utility::Logger::get("server")->log("[FTP upload] name:" + name);
 
 	//convert mpg to mp4
 	if(pac.getContent() == TYPE_MEIDA_MPG)
@@ -98,10 +95,9 @@ bool KTVStorageClientHandler::processUpLoad(StoragePacket &pac ,const std::strin
 	if(pac.getContent() == TYPE_APK_LOG || pac.getContent() == TYPE_ROM_LOG)
 	{
 		sendBackToBox(pac , true);
-	//	bool ret = yiqiding::net::DistributeContent::UpLoadFile(yiqiding::net::yiqichang_server ,
-	//	name,mime , path , box::BoxInfoMan::getInstace()->getShopName());
+
 		bool ret = yiqiding::net::DistributeContent::UpLoadFile4( Singleton<yiqiding::ktv::LogDelayUpload>::getInstance()->getServer()->getDataServer() ,
-			name , mime ,	path ,box::BoxInfoMan::getInstace()->getShopName());
+			name , mime , path ,box::BoxInfoMan::getInstace()->getShopName());
 		if(!ret)
 		{	
 			yiqiding::utility::Logger::get("storage")->log("UpLoadFile Error" + path + name , yiqiding::utility::Logger::WARNING);
@@ -118,7 +114,7 @@ bool KTVStorageClientHandler::processUpLoad(StoragePacket &pac ,const std::strin
 		}
 		else
 		{	
-			yiqiding::utility::Logger::get("storage")->log("UpLoadFile" + path + name );
+			yiqiding::utility::Logger::get("storage")->log("UpLoadFile " + path + " " + name );
 		}
 
 		return true;

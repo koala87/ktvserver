@@ -145,41 +145,42 @@ int main(int argc, const char* argv[]) {
 			//start telnet server
 			telnet_server.reset(new TelNetServer());
 			telnet_server->Start(tel_listen_port);
-			telnet_server->addFunc("sshowAllConnection" , (net::tel::ExeFunc)ktv::Server::sshowAllConnection, "show all connection to server\r\n" ,  ktv_server.get());
+			telnet_server->addFunc("showAllConnection" , (net::tel::ExeFunc)ktv::Server::sshowAllConnection, "show all connection to server\r\n" ,  ktv_server.get());
 			// add debug functions
-			telnet_server->addFunc("showBoxConnection" , (net::tel::ExeFunc)ktv::Server::sshowAllConnection, "show all box connections to server\r\n" ,  ktv_server.get());
-			telnet_server->addFunc("showAppConnection" , (net::tel::ExeFunc)ktv::Server::sshowAllConnection, "show all app connections to server\r\n" ,  ktv_server.get());
-			telnet_server->addFunc("showERPConnection" , (net::tel::ExeFunc)ktv::Server::sshowAllConnection, "show all erp connections to server\r\n" ,  ktv_server.get());
-			telnet_server->addFunc("showMusicConnection" , (net::tel::ExeFunc)ktv::Server::sshowAllConnection, "show app/box mapping\r\n" ,  ktv_server.get());
-			telnet_server->addFunc("showAccountInfo" , (net::tel::ExeFunc)ktv::Server::sshowAllConnection, "show app acounts info\r\n" ,  ktv_server.get());
-			telnet_server->addFunc("uploadTestFile" , (net::tel::ExeFunc)ktv::Server::sshowAllConnection, "upload test file\r\n" ,  ktv_server.get());
-			telnet_server->addFunc("showAppBoxMap" , (net::tel::ExeFunc)ktv::Server::sshowAllConnection, "show all connection to server\r\n" ,  ktv_server.get());
+			telnet_server->addFunc("showBoxConnection" , (net::tel::ExeFunc)ktv::Server::sshowBoxConnection, "show all box connections to server\r\n" ,  ktv_server.get());
+			telnet_server->addFunc("showAppConnection" , (net::tel::ExeFunc)ktv::Server::sshowAppConnection, "show all app connections to server\r\n" ,  ktv_server.get());
+			telnet_server->addFunc("showERPConnection" , (net::tel::ExeFunc)ktv::Server::sshowERPConnection, "show all erp connections to server\r\n" ,  ktv_server.get());
+			telnet_server->addFunc("showMusicConnection" , (net::tel::ExeFunc)ktv::Server::sshowMusicConnection, "show app/box mapping\r\n" ,  ktv_server.get());
+			telnet_server->addFunc("showAccountInfo" , (net::tel::ExeFunc)ktv::Server::sshowAccountInfo, "show app acounts info\r\n" ,  ktv_server.get());
+			telnet_server->addFunc("uploadTestFile" , (net::tel::ExeFunc)ktv::Server::suploadTestFile, "upload test file\r\n" ,  ktv_server.get());
+			telnet_server->addFunc("showAppBoxMapping" , (net::tel::ExeFunc)ktv::Server::sshowAppBoxMapping, "show app/box mapping\r\n" ,  ktv_server.get());
+			telnet_server->addFunc("showAll" , (net::tel::ExeFunc)ktv::Server::sshowAll, "show all information\r\n" ,  ktv_server.get());
 
-			telnet_server->addFunc("sshowAllVirtualConnection" , (net::tel::ExeFunc)ktv::Server::sshowAllVirtualConnection , "show all virtual connection to server\r\n" ,  ktv_server.get());
-			telnet_server->addFunc("sshowServerInfo" , (net::tel::ExeFunc)ktv::Server::sshowServerInfo, "show Server info\r\n" ,  ktv_server.get());
-			telnet_server->addFunc("sshowVersion" , (net::tel::ExeFunc)ktv::Server::sshowVersion, "show current version\r\n");
-			telnet_server->addFunc("sshowERPRequest" , (net::tel::ExeFunc)ktv::Server::sshowERPRequest,
+			telnet_server->addFunc("showAllVirtualConnection" , (net::tel::ExeFunc)ktv::Server::sshowAllVirtualConnection , "show all virtual connection to server\r\n" ,  ktv_server.get());
+			telnet_server->addFunc("showServerInfo" , (net::tel::ExeFunc)ktv::Server::sshowServerInfo, "show Server info\r\n" ,  ktv_server.get());
+			telnet_server->addFunc("showVersion" , (net::tel::ExeFunc)ktv::Server::sshowVersion, "show current version\r\n");
+			telnet_server->addFunc("showERPRequest" , (net::tel::ExeFunc)ktv::Server::sshowERPRequest,
 				"show erp request , args(int erp_id , int req , int top , int sort) : req = -1 , top = -1 meaning all , sort = 0 meaning increasing  \r\n" , ktv_server.get());
 			
-			telnet_server->addFunc("sshowBOXRequest" , (net::tel::ExeFunc)ktv::Server::sshowBOXRequest, 
+			telnet_server->addFunc("showBOXRequest" , (net::tel::ExeFunc)ktv::Server::sshowBOXRequest, 
 				"show box request , args(int box_id , int req , int top , int sort) : req = -1 , top = -1 meaning all , sort = 0 meaning increasing  \r\n" , ktv_server.get());
-			telnet_server->addFunc("sshowAPPRequest" , (net::tel::ExeFunc)ktv::Server::sshowAPPRequest,
+			telnet_server->addFunc("showAPPRequest" , (net::tel::ExeFunc)ktv::Server::sshowAPPRequest,
 				"show app request , args(int app_id , int req , int top , int sort) : req = -1 , top = -1 meaning all , sort = 0 meaning increasing  \r\n" , ktv_server.get());
-			telnet_server->addFunc("sshowINITRequest" , (net::tel::ExeFunc)ktv::Server::sshowInitRequest , "show init request , args(ip) , \r\n" , ktv_server.get());
-			telnet_server->addFunc("ssetVersion" , (net::tel::ExeFunc)ktv::Server::ssetVersion , "setVersion , args(version) \r\n" , ktv_server.get());
-			telnet_server->addFunc("ssetRomVersion" , (net::tel::ExeFunc)ktv::Server::ssetRomVersion , "setromversion , args(romversion) \r\n" , ktv_server.get());
+			telnet_server->addFunc("showINITRequest" , (net::tel::ExeFunc)ktv::Server::sshowInitRequest , "show init request , args(ip) , \r\n" , ktv_server.get());
+			telnet_server->addFunc("setVersion" , (net::tel::ExeFunc)ktv::Server::ssetVersion , "setVersion , args(version) \r\n" , ktv_server.get());
+			telnet_server->addFunc("setRomVersion" , (net::tel::ExeFunc)ktv::Server::ssetRomVersion , "setromversion , args(romversion) \r\n" , ktv_server.get());
 
 			telnet_server->addFunc("dofile" ,  (net::tel::ExeFunc)ktv::Server::dofile , "lua dofile , args( string name  )\r\n" , ktv_server.get());
 
 			telnet_server->addFunc("testCrash" , (net::tel::ExeFunc)ktv::Server::testCrash , "test Crash\r\n" , ktv_server.get());
 
-			telnet_server->addFunc("sshowMemUsed" , (net::tel::ExeFunc)ktv::Server::showMemUsed , "show mem pool used\r\n" , ktv_server.get());
+			telnet_server->addFunc("showMemUsed" , (net::tel::ExeFunc)ktv::Server::showMemUsed , "show mem pool used\r\n" , ktv_server.get());
 
-			telnet_server->addFunc("sshowMemAvailable" , (net::tel::ExeFunc)ktv::Server::showMemAvailable , "show mem pool available\r\n" , ktv_server.get());
+			telnet_server->addFunc("showMemAvailable" , (net::tel::ExeFunc)ktv::Server::showMemAvailable , "show mem pool available\r\n" , ktv_server.get());
 
-			telnet_server->addFunc("sshowAllKGame" , (net::tel::ExeFunc)ktv::Server::sshowAllKGame , "show ktv challenge \r\n" , ktv_server.get());
-			telnet_server->addFunc("sshowAllKGame2" , (net::tel::ExeFunc)ktv::Server::sshowAllKGame2 , "show ktv game2 \r\n" , ktv_server.get());
-			telnet_server->addFunc("sshowshutdown" , (net::tel::ExeFunc)ktv::Server::sshowShutdown , "show shut down time \r\n" , ktv_server.get());
+			telnet_server->addFunc("showAllKGame" , (net::tel::ExeFunc)ktv::Server::sshowAllKGame , "show ktv challenge \r\n" , ktv_server.get());
+			telnet_server->addFunc("showAllKGame2" , (net::tel::ExeFunc)ktv::Server::sshowAllKGame2 , "show ktv game2 \r\n" , ktv_server.get());
+			telnet_server->addFunc("showshutdown" , (net::tel::ExeFunc)ktv::Server::sshowShutdown , "show shut down time \r\n" , ktv_server.get());
 			// Load MySQL Settings
 			std::string mysql_hostname				=	ktv_conf["database"].getValue("hostname", yiqiding::ktv::DEFAULT_DB_HOSTNAME);
 			int			mysql_port					=	ktv_conf["database"].getInt("port" , yiqiding::ktv::DEFAULT_DB_PORT);	
@@ -246,7 +247,6 @@ int main(int argc, const char* argv[]) {
 				}
 			}
 
-			
 			yiqiding::CrashDump::setCrashProcess(new yiqiding::ktv::ServerCrash());
 			yiqiding::ktv::game::SingerGame::getInstace()->load(ktv_server.get() , "game.xml");
 			yiqiding::ktv::MessageRule::getInstance()->load(yiqiding::ktv::MSG_PATH);

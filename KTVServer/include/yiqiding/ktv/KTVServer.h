@@ -319,7 +319,8 @@ namespace yiqiding { namespace ktv {
 		 int showERPConnection(yiqiding::net::tel::ServerSend * srv);
 		 int showAppBoxMapping(yiqiding::net::tel::ServerSend * srv);
 		 int showAccountInfo(yiqiding::net::tel::ServerSend * srv);
-		 int uploadTestFile(yiqiding::net::tel::ServerSend * srv);
+		 int uploadTestFile(yiqiding::net::tel::ServerSend * srv, std::string path, std::string name);
+		 int showAll(yiqiding::net::tel::ServerSend * srv);
 
 		 int showAllVirtualConnection(yiqiding::net::tel::ServerSend *srv);
 		 int showServerInfo(yiqiding::net::tel::ServerSend *srv);
@@ -332,6 +333,15 @@ namespace yiqiding { namespace ktv {
 		 static int sshowAllKGame2(Server *s , yiqiding::net::tel::ServerSend *srv) { return s->showAllKGame2(srv);}
 		 static int sshowAllKGame(Server *s , yiqiding::net::tel::ServerSend *srv) { return s->showAllKGame(srv);}
 		 static int sshowAllConnection(Server *s ,yiqiding::net::tel::ServerSend *srv){ return s->showAllConnection(srv);}
+		 static int sshowAppConnection(Server *s ,yiqiding::net::tel::ServerSend *srv){ return s->showAppConnection(srv);}
+		 static int sshowERPConnection(Server *s ,yiqiding::net::tel::ServerSend *srv){ return s->showERPConnection(srv);}
+		 static int sshowAccountInfo(Server *s ,yiqiding::net::tel::ServerSend *srv){ return s->showAccountInfo(srv);}
+		 static int sshowMusicConnection(Server *s ,yiqiding::net::tel::ServerSend *srv){ return s->showMusicConnection(srv);}
+		 static int sshowAppBoxMapping(Server *s ,yiqiding::net::tel::ServerSend *srv){ return s->showAppBoxMapping(srv);}
+		 static int suploadTestFile(Server *s ,yiqiding::net::tel::ServerSend *srv, std::string path, std::string name){ return s->uploadTestFile(srv, path, name);}
+		 static int sshowAll(Server *s ,yiqiding::net::tel::ServerSend * srv){ return s->showAll(srv);}
+
+		 static int sshowBoxConnection(Server *s ,yiqiding::net::tel::ServerSend *srv){ return s->showBoxConnection(srv);}
 		 static int sshowAllVirtualConnection(Server *s ,yiqiding::net::tel::ServerSend *srv) { return s->showAllVirtualConnection(srv);}
 		 static int sshowServerInfo(Server *s ,yiqiding::net::tel::ServerSend *srv){ return s->showServerInfo(srv);}
 		 static int sshowERPRequest(Server *s , yiqiding::net::tel::ServerSend *srv , int erp_id , int req , int top , bool sort){return s->showRequset(srv , 0 , erp_id , req , top , sort);}		

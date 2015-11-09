@@ -217,6 +217,7 @@ namespace yiqiding { namespace ktv { namespace extended {
 		inline size_t getConnectionID() const	{ return _conn_id; };
 		// Setter
 		inline void setConnectionID(size_t id)	{ _conn_id = id; };
+		inline const std::string &	getIP() const{ return _IpAddress;}
 	};
 
 

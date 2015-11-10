@@ -213,6 +213,7 @@ int main(int argc, const char* argv[]) {
 			ktv_server->setTvPlayUrl(ktv_conf["info"].getValue("tvPlayUrl" , yiqiding::ktv::DEFAULT_INFO_TVPLAYURL));
 			ktv_server->setWineServiceUrl(ktv_conf["info"].getValue("wineServiceUrl" , yiqiding::ktv::DEFAULT_INFO_WINESERVICEURL));
 			ktv_server->setValidate(ktv_conf["info"].getInt("validate" , yiqiding::ktv::DEFAULT_SERVER_VALIDATE));
+			ktv_server->setImageCache(ktv_conf["info"].getInt("image_cache" , yiqiding::ktv::DEFAULT_IMAGE_CACHE));
 			ktv_server->setDataServer(ktv_conf["info"].getValue("dataserver" , yiqiding::ktv::DEFAULT_INFO_DATA_SERVER));
 			ktv_server->setJingDu(ktv_conf["local"].getValue("jingdu" , yiqiding::ktv::DEFAULT_LOCAL_JINGDU));
 			ktv_server->setWeiDu(ktv_conf["local"].getValue("weidu" , yiqiding::ktv::DEFAULT_LOCAL_WEIDU));

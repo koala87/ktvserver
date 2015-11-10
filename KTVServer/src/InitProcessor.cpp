@@ -205,6 +205,8 @@ void InitProcessor::processInit()
 
 			root->InsertEndChild(node = doc.NewElement("validate"));
 			node->InsertEndChild(doc.NewText(yiqiding::utility::toCString(_server->getValidate())));
+			root->InsertEndChild(node = doc.NewElement("image_cache"));
+			node->InsertEndChild(doc.NewText(yiqiding::utility::toCString(_server->getImageCache())));
 			root->InsertEndChild(node = doc.NewElement("sid"));
 			node->InsertEndChild(doc.NewText(_server->getSid().c_str()));
 			root->InsertEndChild(node = doc.NewElement("controlenabled"));
@@ -380,6 +382,8 @@ void InitProcessor::processOtherInit()
 
 			root->InsertEndChild(node = doc.NewElement("validate"));
 			node->InsertEndChild(doc.NewText(yiqiding::utility::toCString(_server->getValidate())));
+			root->InsertEndChild(node = doc.NewElement("image_cache"));
+			node->InsertEndChild(doc.NewText(yiqiding::utility::toCString(_server->getImageCache())));
 			root->InsertEndChild(node = doc.NewElement("sid"));
 			node->InsertEndChild(doc.NewText(yiqiding::utility::toString(_server->getSid()).c_str()));
 			root->InsertEndChild(node = doc.NewElement("controlenabled"));

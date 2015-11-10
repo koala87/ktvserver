@@ -42,6 +42,7 @@ namespace yiqiding { namespace ktv {
 		DEFAULT_LOG_REQUEST					=	0,
 		DEFAULT_CONSOLE_HIDE				=	1,
 		DEFAULT_SERVER_VALIDATE				=	0,
+		DEFAULT_IMAGE_CACHE					=	1,
 
 		DEFAULT_CONTROL_ENABLE				=	0,
 		DEFAULT_INFOSERVER					=	0,
@@ -140,6 +141,7 @@ namespace yiqiding { namespace ktv {
 		std::string			_city;
 		std::string			_appServerUrl;
 		bool				_validate;
+		bool				_image_cache;
 		std::string			_sid;
 		bool				_control_enable;//ÖÐ¿Ø
 		bool				_infoserver;
@@ -246,6 +248,7 @@ namespace yiqiding { namespace ktv {
 		inline const std::string &  getAddress()			const	{ return _address;}
 		inline const std::string& getAppServerUrl()			const   { return _appServerUrl;}
 		inline bool getValidate()							const	{ return _validate;}
+		inline bool getImageCache()							const	{ return _image_cache;}
 		inline const std::string getSid()					const	{ return _sid;}
 		inline bool getControlenabled()						const	{ return _control_enable;}
 #ifdef LOG_REQUEST
@@ -285,7 +288,7 @@ namespace yiqiding { namespace ktv {
 		inline void setAddress(const std::string &address)						{ _address = address;}
 		inline void setAppServer(const std::string &appServerUrl)				{_appServerUrl = appServerUrl;}
 		inline void setValidate(bool validate)									{_validate = validate;}
-
+		inline void setImageCache(bool val)										{_image_cache = val;}
 
 		inline void setErpUsername(const std::string &username)					{_erp_username = username;}
 		inline void setErpHostname(const std::string &hostname)					{_erp_hostname = hostname;}

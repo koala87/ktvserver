@@ -206,6 +206,12 @@ int main(int argc, const char* argv[]) {
 			ktv_server->setPortApkVersion(ktv_conf["info"].getValue("portapkversion" , yiqiding::ktv::DEFAULT_INFO_PORT_VERISON));
 			ktv_server->setAPKPath(ktv_conf["info"].getValue("apk_path" , yiqiding::ktv::DEFAULT_INFO_APK_PATH));
 			ktv_server->setVersion(ktv_conf["info"].getValue("version" , yiqiding::ktv::DEFAULT_INFO_VERSION));
+
+			ktv_server->setCashApkIp(ktv_conf["info"].getValue("cash_apk_ip" , yiqiding::ktv::DEFAULT_CASH_APK_IP));
+			ktv_server->setCashApkPort(ktv_conf["info"].getValue("cash_apk_port" , yiqiding::ktv::DEFAULT_CASH_APK_PORT));
+			ktv_server->setCashApkPath(ktv_conf["info"].getValue("cash_apk_path" , yiqiding::ktv::DEFAULT_CASH_APK_PATH));
+			ktv_server->setCashApkVersion(ktv_conf["info"].getValue("cash_apk_version" , yiqiding::ktv::DEFAULT_CASH_APK_VERSION));
+
 			ktv_server->setRomUrl(ktv_conf["info"].getValue("romUrl" , yiqiding::ktv::DEFAULT_INFO_ROMURL));
 			ktv_server->setRomVersion(ktv_conf["info"].getValue("romVersion" , yiqiding::ktv::DEFAULT_INFO_ROM_VERSION));
 			ktv_server->setVideoUrl(ktv_conf["info"].getValue("video_url" , yiqiding::ktv::DEFAULT_INFO_VIDEO_URL));

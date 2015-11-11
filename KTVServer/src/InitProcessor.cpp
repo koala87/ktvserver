@@ -219,7 +219,15 @@ void InitProcessor::processInit()
 			node->InsertEndChild(doc.NewText(_server->getPortApkUrl().c_str()));
 			root->InsertEndChild(node = doc.NewElement("portapkversion"));
 			node->InsertEndChild(doc.NewText(_server->getPortApkVersion().c_str()));
-		
+			//cash
+			root->InsertEndChild(node = doc.NewElement("cash_apk_ip"));
+			node->InsertEndChild(doc.NewText(_server->getCashApkIp().c_str()));
+			root->InsertEndChild(node = doc.NewElement("cash_apk_port"));
+			node->InsertEndChild(doc.NewText(_server->getCashApkPort().c_str()));
+			root->InsertEndChild(node = doc.NewElement("cash_apk_path"));
+			node->InsertEndChild(doc.NewText(_server->getCashApkPath().c_str()));
+			root->InsertEndChild(node = doc.NewElement("cash_apk_version"));
+			node->InsertEndChild(doc.NewText(_server->getCashApkVersion().c_str()));
 		}
 
 		tinyxml2::XMLPrinter printer(0, true);

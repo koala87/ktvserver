@@ -57,6 +57,12 @@ namespace yiqiding { namespace ktv {
 	static const char DEFAULT_KTV_SID[]				=	"0";
 	static const char DEFAULT_SERVER_LOG_FILE[]		=	"ktvserver.log";
 	static const char DEFAULT_INFO_APK_PATH[]		=	"install/KTVBox.apk";
+	
+	static const char DEFAULT_CASH_APK_PATH[]		=	"";
+	static const char DEFAULT_CASH_APK_VERSION[]	=	"1.0";
+	static const char DEFAULT_CASH_APK_IP[]		=	"127.0.0.1";
+	static const char DEFAULT_CASH_APK_PORT[]		=	"1234";
+
 	static const char DEFAULT_INFO_ROMURL[]			=	"install/update.zip";
 	static const char DEFAULT_INFO_VIDEO_URL[]		=	"http://192.168.1.242:8081";
 	static const char DEFAULT_INFO_IP[]				=	"192.168.1.242";
@@ -130,6 +136,13 @@ namespace yiqiding { namespace ktv {
 		std::string			_ip;
 		std::string			_videourl;
 		std::string			_version;
+
+		// cash
+		std::string			_cash_apk_ip;
+		std::string			_cash_apk_port;
+		std::string			_cash_apk_path;
+		std::string			_cash_apk_version;
+
 		std::string			_romVersion;
 		std::string			_romUrl;
 		std::string			_tvPlayUrl;
@@ -268,6 +281,11 @@ namespace yiqiding { namespace ktv {
 		inline const std::string& getPortApkVersion()		const	{return _portapkversion;}
 		inline const std::string& getDataServer()			const	{return _dataserver;}
 
+		inline const std::string& getCashApkIp()			const	{return _cash_apk_ip;}
+		inline const std::string& getCashApkPort()			const	{return _cash_apk_port;}
+		inline const std::string& getCashApkPath()			const	{return _cash_apk_path;}
+		inline const std::string& getCashApkVersion()		const	{return _cash_apk_version;}
+
 		// Setter
 		inline void setDatabaseLogin(const std::string& host, const std::string& user, const std::string& pwd, const std::string& db, int port = 0)	{ _database.setLogin(host, user, pwd, db, port); };
 		inline void setAPKPath(const std::string& apk_path)						{ _apk_path = apk_path; };
@@ -275,6 +293,11 @@ namespace yiqiding { namespace ktv {
 		inline void setVideoUrl(const std::string &url)							{ _videourl = url;}
 		inline void setVersion(const std::string &version)						{ _version = version;}
 	
+		inline void setCashApkIp(const std::string &ip)							{ _cash_apk_ip = ip;}
+		inline void setCashApkPort(const std::string &port)						{ _cash_apk_port = port;}
+		inline void setCashApkPath(const std::string &path)						{ _cash_apk_path = path;}
+		inline void setCashApkVersion(const std::string &version)				{ _cash_apk_version = version;}
+
 #ifdef LOG_REQUEST
 		inline void setRequestInFile(bool yes)									{ _req_file = yes;}
 #endif

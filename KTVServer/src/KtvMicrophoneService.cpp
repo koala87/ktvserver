@@ -17,15 +17,26 @@
 
 #define DEBUG_MICROPHONE 
 
+#define MICROPHONE_DEBUG 1
+
+#define MICROPHONE_MIX_DUMP 0
+
 using namespace yiqiding;
 
 void KtvMicrophoneService::DataHandleThread::run() {
-	//printf("KtvMicrophoneService::DataHandleThread::run\n");
-	//yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::DataHandleThread::run", yiqiding::utility::Logger::NORMAL);
-	// yiqiding::ktv::audio::PCMAudioOutPut output;
+	if(MICROPHONE_DEBUG){
+		yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::DataHandleThread::run", yiqiding::utility::Logger::NORMAL);
+	}
 	std::vector<RecvDataInfo *> vecData;
 	std::vector<AacDecApi *> aac;
-	// output.start(2 , 44100 , 16);
+
+	FILE* fp = NULL;
+	uint32_t test_tmp = 0;
+	uint32_t test_tmp2 = 0;
+	if(MICROPHONE_MIX_DUMP) {
+		char* file = "dest_test.pcm";
+		fp = fopen(file, "wb+");
+	}
 
 	while(true) {
 		if (mpOwn->mMultiMapdatas.empty() || mpOwn->mMultiMapaac.empty()) {
@@ -55,8 +66,9 @@ void KtvMicrophoneService::DataHandleThread::run() {
 								std::map<uint32_t , AacDecApi *>* pSingleKtvBoxAacMap
 									= mpOwn->mMultiMapaac[ktvBoxId];
 								aac.push_back((*pSingleKtvBoxAacMap)[phoneId]);
-								//printf("KtvMicrophoneService::DataHandleThread push_back n = %d\n", n);
-								//yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::DataHandleThread push_back n = " + utility::toString(n), yiqiding::utility::Logger::NORMAL);
+								if(MICROPHONE_DEBUG){
+									yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::DataHandleThread push_back n = " + utility::toString(n), yiqiding::utility::Logger::NORMAL);
+								}
 							}
 						}
 						char mix[MAX_MICROPHONE_COUNT][MIX_MAX_LEN];
@@ -65,9 +77,10 @@ void KtvMicrophoneService::DataHandleThread::run() {
 						int bufOutLen;
 						int consumed;
 						for(uint32_t k = 0 ; k < aac.size() ; k++){
-							//printf("KtvMicrophoneService::DataHandleThread vecData[%d]->mMicrophoneDataLen = %d\n", k, vecData[k]->mMicrophoneDataLen);
-							//yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::DataHandleThread vecData[" + utility::toString(k) +\
-								"->mMicrophoneDataLen = " + utility::toString(vecData[k]->mMicrophoneDataLen), yiqiding::utility::Logger::NORMAL);
+							if(MICROPHONE_DEBUG){
+								yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::DataHandleThread vecData[" + utility::toString(k) +\
+									"->mMicrophoneDataLen = " + utility::toString(vecData[k]->mMicrophoneDataLen), yiqiding::utility::Logger::NORMAL);
+							}
 							aac[k]->DecodeBuffer((unsigned char *)vecData[k]->mpMicrophoneData ,
 								vecData[k]->mMicrophoneDataLen , &pBufOut , &bufOutLen , &consumed);
 							memcpy(((char *)mix )+ MIX_MAX_LEN * k  , pBufOut , bufOutLen);
@@ -80,9 +93,27 @@ void KtvMicrophoneService::DataHandleThread::run() {
 							delete *bg;
 							bg = vecData.erase(bg);
 						}
-						//printf("KtvMicrophoneService::DataHandleThread ktvBoxId = %d\n", ktvBoxId);
-						//yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::DataHandleThread ktvBoxId = " +\
-						//	utility::toString(ktvBoxId), yiqiding::utility::Logger::NORMAL);
+						if(MICROPHONE_DEBUG){
+							yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::DataHandleThread ktvBoxId = " +\
+								utility::toString(ktvBoxId), yiqiding::utility::Logger::NORMAL);
+						}
+						if(MICROPHONE_MIX_DUMP) {
+							if (!test_tmp2) {
+								fwrite((unsigned char *)dest,1,MIX_MAX_LEN,fp);
+								test_tmp++;
+							}else {
+								if(MICROPHONE_DEBUG){
+									yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::DataHandleThread DONE", yiqiding::utility::Logger::NORMAL);
+								}
+							}
+							if (test_tmp > 3000) {
+								test_tmp = 0;
+								if (!test_tmp2) {
+									fclose(fp);
+								}
+								test_tmp2 = 1;
+							}
+						}
 						mpOwn->mConn->sendDataToBox(ktvBoxId, dest, MIX_MAX_LEN);
 					}
 					mpOwn->mMultiKtvboxState[ktvBoxId] = false;
@@ -93,16 +124,18 @@ void KtvMicrophoneService::DataHandleThread::run() {
 }
 
 void KtvMicrophoneService::UdpServerRecvThread::run() {
-	//printf("KtvMicrophoneService::UdpServerRecvThread::run\n");
-	//yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::UdpServerRecvThread::run", yiqiding::utility::Logger::NORMAL);
 
+	if(MICROPHONE_DEBUG){
+		yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::UdpServerRecvThread::run", yiqiding::utility::Logger::NORMAL);
+	}
 	SOCKET socketFd = socket(AF_INET , SOCK_DGRAM , IPPROTO_UDP); 
 
 	struct sockaddr_in servaddr;
 	char on = 1;
 	if (setsockopt(socketFd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) == SOCKET_ERROR) {
-		//printf("reuseaddr error\n");
-		yiqiding::utility::Logger::get("server")->log("reuseaddr error", yiqiding::utility::Logger::NORMAL);
+		if(MICROPHONE_DEBUG){
+			yiqiding::utility::Logger::get("server")->log("reuseaddr error", yiqiding::utility::Logger::NORMAL);
+		}
 	}
 	u_long bio = 1;
 	uint32_t nSendBuf = 1024 * 1024 * 4;
@@ -116,8 +149,9 @@ void KtvMicrophoneService::UdpServerRecvThread::run() {
 	servaddr.sin_port = htons(UDP_PORT);
 
 	if (bind(socketFd, (struct sockaddr *)&servaddr, sizeof(servaddr)) == SOCKET_ERROR) {
-		//printf("bind %d error\n", UDP_PORT);
-		//yiqiding::utility::Logger::get("server")->log("bind " + utility::toString(UDP_PORT) + " error", yiqiding::utility::Logger::NORMAL);
+		if(MICROPHONE_DEBUG){
+			yiqiding::utility::Logger::get("server")->log("bind " + utility::toString(UDP_PORT) + " error", yiqiding::utility::Logger::NORMAL);
+		}
 	}
 
 	char pBuf[4096];
@@ -127,7 +161,7 @@ void KtvMicrophoneService::UdpServerRecvThread::run() {
 
 	while(true){
 		int nRet = recvfrom(socketFd , pBuf , sizeof(pBuf) , 0 , (struct sockaddr *)&clientaddr , &fromLen);
-		if(nRet <= 0 ) {
+		if(nRet <= 4 ) {
 			continue;
 		}
 		{
@@ -149,6 +183,10 @@ KtvMicrophoneService::KtvMicrophoneService(yiqiding::ktv::ConnectionManager* con
 }
 
 KtvMicrophoneService::~KtvMicrophoneService(void) {
+	if(MICROPHONE_DEBUG){
+		yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::~KtvMicrophoneService start", 
+		yiqiding::utility::Logger::NORMAL); 
+	}
 	mpDataHandleThread->exit();
 	mpUdpServerRecvThread->exit();
 	delete(mpDataHandleThread);
@@ -182,6 +220,10 @@ KtvMicrophoneService::~KtvMicrophoneService(void) {
 		}
 	}
 	yiqiding::net::Socket::Driver::unload();
+	if(MICROPHONE_DEBUG){
+		yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::~KtvMicrophoneService end", 
+		yiqiding::utility::Logger::NORMAL); 
+	}
 }
 
 void KtvMicrophoneService::init() {
@@ -194,15 +236,19 @@ void KtvMicrophoneService::init() {
 }
 
 void KtvMicrophoneService::dispatchData(RecvDataInfo* pRecvDataInfo) {
+	if(MICROPHONE_DEBUG){
+		yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::dispatchData start", 
+			yiqiding::utility::Logger::NORMAL); 
+	}
 	char verCode[VER_CODE_LEN] = {0};
 	memcpy(verCode , pRecvDataInfo->mpData , VER_CODE_LEN);
-	//printf("KtvMicrophoneService::dispatchData verCode[0] = %x, verCode[1] = %x,verCode[2] = %x, verCode[3] = %x\n",
-	// 	verCode[0],verCode[1],verCode[2],verCode[3]);
 
-	//yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::dispatchData verCode[0] = " +\
+	if(MICROPHONE_DEBUG){
+	yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::dispatchData verCode[0] = " +\
 		utility::toString(verCode[0]) + " verCode[1] = " + utility::toString(verCode[1]) + " verCode[2] = " +\
 		utility::toString(verCode[2]) + " verCode[3] = " + utility::toString(verCode[3]), 
-	//	yiqiding::utility::Logger::NORMAL);
+		yiqiding::utility::Logger::NORMAL);
+	}
 
 	pRecvDataInfo->mpMicrophoneData = pRecvDataInfo->mpData + VER_CODE_LEN;
 	pRecvDataInfo->mMicrophoneDataLen = pRecvDataInfo->mLen - VER_CODE_LEN;
@@ -210,18 +256,16 @@ void KtvMicrophoneService::dispatchData(RecvDataInfo* pRecvDataInfo) {
 	for(uint32_t i = 0; i < VER_CODE_LEN; i++) {
 		pRecvDataInfo->mPhoneId = (int32_t)(pRecvDataInfo->mPhoneId | ((verCode[i] & 0x000000ff) << ((VER_CODE_LEN - 1 - i) * 8)));
 	}
-	//printf("KtvMicrophoneService::dispatchData mPhoneId = %d\n", pRecvDataInfo->mPhoneId);
-
-	//yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::dispatchData mPhoneId = " +\
-		utility::toString(pRecvDataInfo->mPhoneId), 
-	//	yiqiding::utility::Logger::NORMAL);
-
-	//printf("KtvMicrophoneService::dispatchData mMicrophoneDataLen = %d\n", pRecvDataInfo->mMicrophoneDataLen);
-
-	//yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::dispatchData mMicrophoneDataLen = " +\
-	//	utility::toString(pRecvDataInfo->mMicrophoneDataLen), 
-	//	yiqiding::utility::Logger::NORMAL);
-
+	
+	if(MICROPHONE_DEBUG){
+		yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::dispatchData mPhoneId = " +\
+			utility::toString(pRecvDataInfo->mPhoneId), 
+			yiqiding::utility::Logger::NORMAL);
+		yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::dispatchData mMicrophoneDataLen = " +\
+			utility::toString(pRecvDataInfo->mMicrophoneDataLen), 
+			yiqiding::utility::Logger::NORMAL);
+	}
+	
 	pRecvDataInfo->mKtvBoxId = mConn->getBoxIdFromAppId(pRecvDataInfo->mPhoneId);
 	{
 		yiqiding::MutexGuard guard(mHandleMutexLock);
@@ -239,6 +283,10 @@ void KtvMicrophoneService::dispatchData(RecvDataInfo* pRecvDataInfo) {
 		if (mMultiMapaac[pRecvDataInfo->mKtvBoxId]->size() >= MAX_MICROPHONE_COUNT) {
 			free(pRecvDataInfo->mpData);
 			delete pRecvDataInfo;
+			if(MICROPHONE_DEBUG){
+				yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::dispatchData end 0", 
+				yiqiding::utility::Logger::NORMAL); 
+			}
 			return;
 		}
 
@@ -251,6 +299,10 @@ void KtvMicrophoneService::dispatchData(RecvDataInfo* pRecvDataInfo) {
 			std::queue<RecvDataInfo *> *pDataQueue = new std::queue<RecvDataInfo *>();
 			pDataQueue->push(pRecvDataInfo);
 			(*mMultiMapdatas[pRecvDataInfo->mKtvBoxId])[pRecvDataInfo->mPhoneId] = pDataQueue;
+			if(MICROPHONE_DEBUG){
+				yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::dispatchData end 1", 
+				yiqiding::utility::Logger::NORMAL); 
+			}
 		} else {
 			if (mMultiKtvboxState[pRecvDataInfo->mKtvBoxId] == true) {
 				free(pRecvDataInfo->mpData);
@@ -259,22 +311,32 @@ void KtvMicrophoneService::dispatchData(RecvDataInfo* pRecvDataInfo) {
 			}
 
 			(*mMultiMapdatas[pRecvDataInfo->mKtvBoxId])[pRecvDataInfo->mPhoneId]->push(pRecvDataInfo);
-			//printf("KtvMicrophoneService::dispatchData size = %d\n", (*mMultiMapdatas[pRecvDataInfo->mKtvBoxId])[pRecvDataInfo->mPhoneId]->size());
-			//yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::dispatchData size = " +
-			//	utility::toString((*mMultiMapdatas[pRecvDataInfo->mKtvBoxId])[pRecvDataInfo->mPhoneId]->size()),
-			//	yiqiding::utility::Logger::NORMAL);
+			
+			if(MICROPHONE_DEBUG){
+				yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::dispatchData size = " +
+					utility::toString((*mMultiMapdatas[pRecvDataInfo->mKtvBoxId])[pRecvDataInfo->mPhoneId]->size()),
+					yiqiding::utility::Logger::NORMAL);
+			}
 			if ((*mMultiMapdatas[pRecvDataInfo->mKtvBoxId])[pRecvDataInfo->mPhoneId]->size() == MAX_MICROPHONE_QUEUE_COUNT) {
-				//printf("KtvMicrophoneService::dispatchData MAX_MICROPHONE_QUEUE_COUNT\n");
-			//	yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::dispatchData MAX_MICROPHONE_QUEUE_COUNT",
-			//		yiqiding::utility::Logger::NORMAL);
+				if(MICROPHONE_DEBUG){
+					yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::dispatchData MAX_MICROPHONE_QUEUE_COUNT",
+						yiqiding::utility::Logger::NORMAL);
+				}
 				mMultiKtvboxState[pRecvDataInfo->mKtvBoxId] = true;
 			}
 		}
 	}
+	if(MICROPHONE_DEBUG){
+		yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::dispatchData end 2", 
+		yiqiding::utility::Logger::NORMAL); 
+	}
 }
 
 void KtvMicrophoneService::noticeConnectLostApp(uint32_t phoneId) {
-
+	if(MICROPHONE_DEBUG){
+		yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::noticeConnectLostApp start", 
+		yiqiding::utility::Logger::NORMAL); 
+	}
 	yiqiding::MutexGuard guard(mHandleMutexLock);
 	uint32_t ktvBoxId = mConn->getBoxIdFromAppId(phoneId);
 	if (mMultiMapaac.count(ktvBoxId)) {
@@ -297,5 +359,8 @@ void KtvMicrophoneService::noticeConnectLostApp(uint32_t phoneId) {
 			mMultiMapdatas[ktvBoxId]->erase(phoneId);
 		}
 	}
-
+	if(MICROPHONE_DEBUG){
+		yiqiding::utility::Logger::get("server")->log("KtvMicrophoneService::noticeConnectLostApp end", 
+		yiqiding::utility::Logger::NORMAL); 
+	}
 }

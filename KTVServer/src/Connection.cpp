@@ -19,6 +19,8 @@ using yiqiding::ktv::Packet;
 using yiqiding::ktv::ERPRole;
 using namespace yiqiding::ktv::packet;
 
+extern int g_debug;
+
 //////////////////////////////////////////////////////////////////////////
 // ConnectionCacheManager
 //////////////////////////////////////////////////////////////////////////
@@ -707,6 +709,9 @@ void ConnectionManager::sendDataToBox(uint32_t box_id, const char* data, uint32_
 	MutexGuard guard(_music_conn_mutex);
 	MutexGuard lock(_box_conn_mutex);
 
+	if(g_debug){
+		Logger::get("server")->log("[microphone] enter sendDataToBox ", Logger::NORMAL);
+	}
 	int ip = 0;
 	BoxConnection* box_conn;
 	{
@@ -745,6 +750,9 @@ void ConnectionManager::sendDataToBox(uint32_t box_id, const char* data, uint32_
 		}
 		conn->release();
 	}
+	if(g_debug){
+		Logger::get("server")->log("[microphone] leave sendDataToBox ", Logger::NORMAL);
+	}
 }
 
 void ConnectionManager::updateAppBoxMapping(uint32_t app_id, uint32_t box_id){
@@ -780,12 +788,19 @@ void ConnectionManager::updateAppBoxMapping(uint32_t app_id, uint32_t box_id){
 uint32_t ConnectionManager::getBoxIdFromAppId(uint32_t app_id){
 	MutexGuard lock(_app_box_map_mutex);
 
+	if(g_debug){
+		Logger::get("server")->log("[microphone] enter BoxIdFromAppId ", Logger::NORMAL);
+	}
+
 	auto ptr = _app_box_map.find(app_id);
 	if (ptr != _app_box_map.end()){
 		return ptr->second;
 	} else {
 		Logger::get("server")->log("get boxId failed! : appId:" + toString(app_id), Logger::NORMAL);
 		return -1;
+	}
+	if(g_debug){
+		Logger::get("server")->log("[microphone] left BoxIdFromAppId ", Logger::NORMAL);
 	}
 }
 

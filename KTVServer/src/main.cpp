@@ -51,6 +51,8 @@ static int __update_second = 19;
 // Prototypes
 BOOL WINAPI consoleHandler(DWORD ctrl);
 
+extern int g_debug = 0; 
+
 // Program entrance
 int main(int argc, const char* argv[]) {
 	try {
@@ -211,6 +213,10 @@ int main(int argc, const char* argv[]) {
 			ktv_server->setCashApkPort(ktv_conf["info"].getValue("cash_apk_port" , yiqiding::ktv::DEFAULT_CASH_APK_PORT));
 			ktv_server->setCashApkPath(ktv_conf["info"].getValue("cash_apk_path" , yiqiding::ktv::DEFAULT_CASH_APK_PATH));
 			ktv_server->setCashApkVersion(ktv_conf["info"].getValue("cash_apk_version" , yiqiding::ktv::DEFAULT_CASH_APK_VERSION));
+
+			ktv_server->setDebug(ktv_conf["info"].getInt("debug" , yiqiding::ktv::DEFAULT_DEBUG));
+
+			g_debug = ktv_server->getDebug();
 
 			ktv_server->setRomUrl(ktv_conf["info"].getValue("romUrl" , yiqiding::ktv::DEFAULT_INFO_ROMURL));
 			ktv_server->setRomVersion(ktv_conf["info"].getValue("romVersion" , yiqiding::ktv::DEFAULT_INFO_ROM_VERSION));

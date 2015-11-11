@@ -52,6 +52,7 @@ namespace yiqiding { namespace ktv {
 		DEFAULT_SAFE_BOX_PORT				=	58850,
 		DEFAULT_SAFE_INI_PORT				=	11236,
 
+		DEFAULT_DEBUG						=	0,
 	};
 
 	static const char DEFAULT_KTV_SID[]				=	"0";
@@ -142,6 +143,8 @@ namespace yiqiding { namespace ktv {
 		std::string			_cash_apk_port;
 		std::string			_cash_apk_path;
 		std::string			_cash_apk_version;
+
+		bool				_debug;
 
 		std::string			_romVersion;
 		std::string			_romUrl;
@@ -286,6 +289,8 @@ namespace yiqiding { namespace ktv {
 		inline const std::string& getCashApkPath()			const	{return _cash_apk_path;}
 		inline const std::string& getCashApkVersion()		const	{return _cash_apk_version;}
 
+		inline bool getDebug()		const	{return _debug;}
+
 		// Setter
 		inline void setDatabaseLogin(const std::string& host, const std::string& user, const std::string& pwd, const std::string& db, int port = 0)	{ _database.setLogin(host, user, pwd, db, port); };
 		inline void setAPKPath(const std::string& apk_path)						{ _apk_path = apk_path; };
@@ -297,6 +302,8 @@ namespace yiqiding { namespace ktv {
 		inline void setCashApkPort(const std::string &port)						{ _cash_apk_port = port;}
 		inline void setCashApkPath(const std::string &path)						{ _cash_apk_path = path;}
 		inline void setCashApkVersion(const std::string &version)				{ _cash_apk_version = version;}
+
+		inline void setDebug(bool val)											{ _debug = val;}
 
 #ifdef LOG_REQUEST
 		inline void setRequestInFile(bool yes)									{ _req_file = yes;}

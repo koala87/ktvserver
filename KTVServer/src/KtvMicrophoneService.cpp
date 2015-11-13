@@ -19,7 +19,7 @@
 
 #define MICROPHONE_DEBUG 1
 
-#define MICROPHONE_MIX_DUMP 0
+#define MICROPHONE_MIX_DUMP 1
 
 using namespace yiqiding;
 

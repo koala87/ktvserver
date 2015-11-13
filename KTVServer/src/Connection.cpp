@@ -736,10 +736,7 @@ void ConnectionManager::sendDataToBox(uint32_t box_id, const char* data, uint32_
 
 		try {
 			//Dispatch
-			Packet packet(packet::KTV_REQ_BOX_TURN_MESSAGE);
-
-			packet.setPayload(data , len);
-			packet.dispatch(conn);
+			Packet::dispatch(conn , data , len);
 			Logger::get("server")->log("[microphone] send microphone data to boxId " + toString(box_id) + 
 				" len : " + toString(len), Logger::NORMAL);
 

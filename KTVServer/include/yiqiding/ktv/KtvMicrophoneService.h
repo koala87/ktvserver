@@ -4,6 +4,7 @@
 #include "yiqiding/Thread.h"
 #include "AacDecApi.h"
 #include <stdint.h>
+#include <list>
 #include "yiqiding/ktv/Connection.h"
 
 
@@ -14,6 +15,7 @@ namespace yiqiding {
 		struct RecvDataInfo {
 			char* mpData;
 			char* mpMicrophoneData;
+			AacDecApi* mpAacDecApi;
 			uint32_t mLen;
 			uint32_t mKtvBoxId;
 			uint32_t mPhoneId;
@@ -28,7 +30,8 @@ namespace yiqiding {
 
 	public:
 		yiqiding::Mutex mHandleMutexLock;
-		yiqiding::Mutex mRecvMutexLock;
+		yiqiding::Mutex mDropDispatchMutexLock;
+		yiqiding::Mutex mDropHandleMutexLock;
 
 	private:
 		class DataHandleThread : public yiqiding::Thread {
@@ -50,8 +53,7 @@ namespace yiqiding {
 		};
 
 	private:
-		std::map<uint32_t , std::map<uint32_t ,std::queue<RecvDataInfo*> *> *> mMultiMapdatas;
-		std::map<uint32_t , std::map<uint32_t , AacDecApi *> *> mMultiMapaac;
+		std::map<uint32_t , std::map<uint32_t ,std::list<RecvDataInfo*> *> *> mMultiMapdatas;
 		std::map<uint32_t , bool> mMultiKtvboxState;
 		UdpServerRecvThread* mpUdpServerRecvThread;
 		DataHandleThread* mpDataHandleThread;

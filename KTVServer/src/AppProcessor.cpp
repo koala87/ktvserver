@@ -544,9 +544,66 @@ void AppProcessor::processReqBoxCode(){
 }
 
 void AppProcessor::processSelfCheck(){
-	// check database connection
-	// check all connections
-	// check box connections
-	// check ERP connections
-	// return result
+	MutexGuard lock(_server->getConnectionManager()->_box_check_mutex);
+	_server->getConnectionManager()->_box_check_flag = true;
+
+	// broadcast check notice
+	Packet out_pack(_pac->getHeader());
+	out_pack.setRequest(packet::REQ_BOX_CHECK_DATA);	
+	auto box_connections = _server->getConnectionManager()->getConnectionBox();
+	auto iter = box_connections.begin();
+	for (;iter!=box_connections.end();iter++) {
+		auto conn = iter->second->getConnection(_server);
+		if (conn) {
+			try {
+				out_pack.dispatch(conn);
+				setOutPack(&out_pack);
+			} catch (...) {
+				utility::Logger::get("server")->log("send check notice error");
+			}
+		}
+	}
+	// self check
+	Packet back(_pac->getHeader());
+	Json::Value root;
+	root["box_connections"] = _server->getConnectionManager()->getBoxConnection();
+	root["app_connections"] = _server->getConnectionManager()->getAppConnection();
+	root["erp_connections"] = _server->getConnectionManager()->getERPConnection();
+
+	// db info
+	Json::Value db;
+	db["host"] = _server->getDBHostname();
+	db["port"] = _server->getDBPort();
+	db["user"] = _server->getDBUsername();
+	db["password"] = _server->getDBPassword();
+	db["db"] = _server->getDBSchema();
+	db["db_status"] = "ok";
+	root["databases"] = db;
+
+	// box check data
+	Json::Value box;
+	auto iter1 = _server->getConnectionManager()->_box_check.begin();
+	for(;iter1 != _server->getConnectionManager()->_box_check.end();iter1++){
+		Json::Value item;
+		item["id"] = iter1->first;
+		item["check"] = iter1->second;
+		box.append(item);
+	}
+	root["box"] = box;
+
+	// wait for box check data
+	Sleep(1000);
+
+	std::string msg = root.toStyledString();
+	back.setPayload(msg.c_str() , msg.length());
+
+	try {
+		back.dispatch(_conn);
+	} catch (...) {
+		utility::Logger::get("server")->log("send check notice error");
+	}
+	setOutPack(&back);
+
+	_server->getConnectionManager()->_box_check.clear();
+	_server->getConnectionManager()->_box_check_flag = false;
 }

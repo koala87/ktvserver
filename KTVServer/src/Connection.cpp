@@ -709,9 +709,10 @@ void ConnectionManager::sendDataToBox(uint32_t box_id, const char* data, uint32_
 	MutexGuard guard(_music_conn_mutex);
 	MutexGuard lock(_box_conn_mutex);
 
+	/*
 	if(g_debug){
 		Logger::get("server")->log("[microphone] enter sendDataToBox ", Logger::NORMAL);
-	}
+	}*/
 	int ip = 0;
 	BoxConnection* box_conn;
 	{
@@ -720,13 +721,19 @@ void ConnectionManager::sendDataToBox(uint32_t box_id, const char* data, uint32_
 			return;
 		}
 		box_conn = conn_itr->second;
-		ip = inet_addr(box_conn->getConnection(_pool)->getAddress().c_str());
+		//ip = inet_addr(box_conn->getConnection(_pool)->getAddress().c_str());
+		
+		try{
+			ip = inet_addr(box_conn->getConnection(_pool)->getAddress().c_str());
+		}catch(...){
+			Logger::get("server")->log("[microphone critical] get ip crash ", Logger::NORMAL);
+		}
 	}
 	
 	MusicConnection* music_conn = NULL;
 	{
 		
-		auto it = _music_conn.find(ip);
+		auto it = _music_conn.find(ip); 
 		if(it == _music_conn.end()){
 			Logger::get("server")->log("[microphone] boxId :" + toString(box_id) + " does not connect pcm port : 47738 ", Logger::WARNING);
 			return;
@@ -737,8 +744,8 @@ void ConnectionManager::sendDataToBox(uint32_t box_id, const char* data, uint32_
 		try {
 			//Dispatch
 			Packet::dispatch(conn , data , len);
-			Logger::get("server")->log("[microphone] send microphone data to boxId " + toString(box_id) + 
-				" len : " + toString(len), Logger::NORMAL);
+			//Logger::get("server")->log("[microphone] send microphone data to boxId " + toString(box_id) + 
+			//	" len : " + toString(len), Logger::NORMAL);
 
 		} catch (const std::exception& e) {
 			Logger::get("server")->log("[microphone] server fail to send microphone data to boxId" + toString(box_id), Logger::WARNING);
@@ -747,9 +754,9 @@ void ConnectionManager::sendDataToBox(uint32_t box_id, const char* data, uint32_
 		}
 		conn->release();
 	}
-	if(g_debug){
-		Logger::get("server")->log("[microphone] leave sendDataToBox ", Logger::NORMAL);
-	}
+	//if(g_debug){
+		//Logger::get("server")->log("[microphone] leave sendDataToBox ", Logger::NORMAL);
+	//}
 }
 
 void ConnectionManager::updateAppBoxMapping(uint32_t app_id, uint32_t box_id){
@@ -784,10 +791,10 @@ void ConnectionManager::updateAppBoxMapping(uint32_t app_id, uint32_t box_id){
 
 uint32_t ConnectionManager::getBoxIdFromAppId(uint32_t app_id){
 	MutexGuard lock(_app_box_map_mutex);
-
+	/*
 	if(g_debug){
 		Logger::get("server")->log("[microphone] enter BoxIdFromAppId ", Logger::NORMAL);
-	}
+	}*/
 
 	auto ptr = _app_box_map.find(app_id);
 	if (ptr != _app_box_map.end()){
@@ -796,9 +803,10 @@ uint32_t ConnectionManager::getBoxIdFromAppId(uint32_t app_id){
 		Logger::get("server")->log("get boxId failed! : appId:" + toString(app_id), Logger::NORMAL);
 		return -1;
 	}
+	/*
 	if(g_debug){
 		Logger::get("server")->log("[microphone] left BoxIdFromAppId ", Logger::NORMAL);
-	}
+	}*/
 }
 
 std::set<uint32_t>* ConnectionManager::getAppIdsFromBoxId(uint32_t box_id){
@@ -991,5 +999,61 @@ int ConnectionManager::showMusicConnection(yiqiding::net::tel::ServerSend * srv)
 	ss << "\r\n";
 	srv->teleSend(ss.str());
 	return 0;
+}
+
+std::string ConnectionManager::getBoxConnection(){
+	MutexGuard lock(_box_conn_mutex);
+	MutextReader lock1(_codes_mutex);
+	
+	static std::string info = "";
+
+	Json::Value root;
+
+	for(auto it=_box_conn.begin();it!=_box_conn.end();it++){
+		std::string strCode("null");
+		auto it1 = _codes.find(it->first);
+		if(it1 != _codes.end()){
+			strCode = it1->second;
+		}
+		Json::Value item;
+		item["id"] = it->first;
+		item["code"] = strCode;
+		item["ip"] = it->second->getIP();
+		root.append(item);
+	}
+	info = root.toStyledString();
+	return info.c_str();
+}
+
+std::string ConnectionManager::getAppConnection(){
+	MutexGuard lock(_app_conn_mutex);
+	
+	static std::string info = "";
+
+	Json::Value root;
+	for(auto it=_app_conn.begin();it!=_app_conn.end();it++){
+		Json::Value item;
+		item["id"] = it->first;
+		//item["ip"] = "null";
+		root.append(item);
+	}
+	info = root.toStyledString();
+	return info.c_str();
+}
+
+std::string ConnectionManager::getERPConnection(){
+	MutexGuard lock(_erp_conn_mutex);
+	
+	static std::string info = "";
+	Json::Value root;
+
+	for(auto it=_erp_conn.begin();it!=_erp_conn.end();it++){
+		Json::Value item;
+		item["id"] = it->first;
+		//item["ip"] = "null";
+		root.append(item);
+	}
+	info = root.toStyledString();
+	return info.c_str();
 }
  

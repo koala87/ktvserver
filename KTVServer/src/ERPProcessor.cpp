@@ -601,7 +601,20 @@ void ERPProcessor::processChangeBox()
 
 	
 	packet::Packet pack(packet::KTV_REQ_BOX_CHANGE_FROM);
-	 
+
+	// add extra toid
+	Json::Value tmp;
+	tmp["boxid"] = toboxid;
+	std::string ip = box::BoxInfoMan::getInstace()->getIP(toboxid);
+	box::BoxInfoItem * item = box::BoxInfoMan::getInstace()->getItem(ip);
+	if (item != NULL)
+	{		
+		tmp["roomname"] = item->getRoomName();
+		tmp["roomno"] = item->getRoomNo();
+	}
+	std::string msg = tmp.toStyledString();
+	pack.setPayload(msg.c_str() , msg.length());
+
 	try{	
 		_server->getDatabase()->getInfoConnector()->updateBoxStatus(fromboxid , false);
 		bool old = _server->getDatabase()->getInfoConnector()->getBoxStatus(toboxid);

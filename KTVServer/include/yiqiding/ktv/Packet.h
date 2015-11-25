@@ -230,7 +230,10 @@ namespace yiqiding { namespace ktv { namespace packet {
 		BOX_NOTIFY_KTV_LOST_APP		=   33000,
 		APP_REQ_TURN_MESSAGE2       =   90005,
 		APP_REQ_BOX_ID				=   30300,
-		REQ_SELF_CHECK				=   40400,
+		
+		REQ_BOX_CHECK_DATA			=	10016,
+		BOX_NOTIFY_CHECK_DATA		=	10017,
+		REQ_SELF_CHECK				=   10018,
 	};
 
 	/// Packet class

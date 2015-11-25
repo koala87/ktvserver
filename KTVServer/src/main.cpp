@@ -190,6 +190,11 @@ int main(int argc, const char* argv[]) {
 			std::string mysql_password				=	ktv_conf["database"].getValue("password" , yiqiding::ktv::DEFAULT_DB_PASSWORD);
 			std::string mysql_database				=	ktv_conf["database"].getValue("database" , yiqiding::ktv::DEFAULT_DB_SCHEMA);
 
+			ktv_server->setDBHostname(mysql_hostname);
+			ktv_server->setDBPort(mysql_port);
+			ktv_server->setDBUsername(mysql_username);
+			ktv_server->setDBPassword(mysql_password);
+			ktv_server->setDBSchema(mysql_database);
 
 			ktv_server->setErpHostname(ktv_conf["database"].getValue("erp_hostname" , yiqiding::ktv::DEFAULT_DB_ERP_HOSTNAME));
 			ktv_server->setErpPort(ktv_conf["database"].getInt("erp_port" , yiqiding::ktv::DEFAULT_ERP_DB_PORT));
@@ -259,9 +264,11 @@ int main(int argc, const char* argv[]) {
 					__update_second = yiqiding::utility::toInt(ts[2]);
 				}
 			}
-
+			// set crash handler
 			yiqiding::CrashDump::setCrashProcess(new yiqiding::ktv::ServerCrash());
+
 			yiqiding::ktv::game::SingerGame::getInstace()->load(ktv_server.get() , "game.xml");
+			
 			yiqiding::ktv::MessageRule::getInstance()->load(yiqiding::ktv::MSG_PATH);
 
 			yiqiding::ktv::box::BoxInfoMan::getInstace(ktv_server.get());
@@ -275,14 +282,17 @@ int main(int argc, const char* argv[]) {
 			Singleton<yiqiding::ktv::LogDelayUpload>::getInstance()->load("cache");
 			Singleton<yiqiding::ktv::LogDelayUpload>::getInstance()->load("zip");
 
+			// load file
 			if(yiqiding::io::File::isExist(ktv::fire::path) && !Singleton<yiqiding::ktv::fire::FireWarn>::getInstance()->load(ktv::fire::path))
 			{
 				return Logger::get("server")->log("load " + ktv::fire::path , Logger::WARNING);
 			}
-
+			// load adurl.json, will not error out if not exists
 			Singleton<yiqiding::ktv::AdUrl>::getInstance()->load(yiqiding::ktv::AdPath);
-
+			// load volume.json, will not error out if not exists
 			Singleton<yiqiding::ktv::Volume>::getInstance()->load(yiqiding::ktv::VlPath);
+
+			// getDatabase()->getMediaConnector()->getAllGame2
 			Singleton<yiqiding::ktv::KTVGameTimer2>::getInstance()->load(ktv_server.get());
 			{
 				yiqiding::ktv::ServerInfo info = {sid , yiqiding::ktv::box::BoxInfoMan::getInstace()->getShopName() ,"000" , yiqiding::ktv::Version , "000" , "000"};
@@ -402,7 +412,6 @@ int main(int argc, const char* argv[]) {
 		// Stop the server
 		ktv_server->stop();
 		
-
 		ftp->stop();
 
 		Logger::get("server")->log("server stopped", Logger::NORMAL);

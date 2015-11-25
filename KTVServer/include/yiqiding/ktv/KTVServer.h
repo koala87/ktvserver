@@ -133,6 +133,12 @@ namespace yiqiding { namespace ktv {
 		std::string			_erp_schema;
 		int					_erp_port;
 
+		std::string			_db_hostname;
+		std::string			_db_username;
+		std::string			_db_password;
+		std::string			_db_schema;
+		int					_db_port;
+
 		std::string			_apk_path;
 		std::string			_ip;
 		std::string			_videourl;
@@ -325,6 +331,20 @@ namespace yiqiding { namespace ktv {
 		inline void setErpPassword(const std::string &password)					{_erp_password = password;}
 		inline void setErpSchema(const std::string &schema)						{_erp_schema = schema;}
 		inline void setErpPort(int port)										{_erp_port = port;}
+
+		// set db info
+		inline void setDBUsername(const std::string &username)					{_db_username = username;}
+		inline void setDBHostname(const std::string &hostname)					{_db_hostname = hostname;}
+		inline void setDBPassword(const std::string &password)					{_db_password = password;}
+		inline void setDBSchema(const std::string &schema)						{_db_schema = schema;}
+		inline void setDBPort(int port)											{_db_port = port;}
+		inline std::string getDBUsername()					{return _db_username;}
+		inline std::string getDBHostname()					{return _db_hostname;}
+		inline std::string getDBPassword()					{return _db_password;}
+		inline std::string getDBSchema()					{return _db_schema;}
+		inline int getDBPort()								{return _db_port;}
+
+
 		inline void setSid(const std::string &sid)												{_sid = sid;}
 		inline void setTelNet(yiqiding::net::tel::ServerSend *srv)										{_srv = srv;}
 		inline void setControlenabled( bool enabled)							{ _control_enable = enabled;}

@@ -26,7 +26,9 @@ namespace yiqiding { namespace ktv {
 		void processVolume();
 
 		void processGetAddress();
-		
+
+		void processCheckData();
+
 		//wireless
 		void processTurnMsgToApp();
 		void processTempCode();

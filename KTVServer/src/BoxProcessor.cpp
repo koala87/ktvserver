@@ -547,6 +547,15 @@ void BoxProcessor::processGetGPS()
 	setOutPack(&out_pack);
 }
 
+void BoxProcessor::processCheckData()
+{
+	// store box check data
+	MutexGuard lock(_server->getConnectionManager()->_box_check_mutex);
+	if( _server->getConnectionManager()->_box_check_flag ){
+		_server->getConnectionManager()->_box_check[_pac->getDeviceID()] = _pac->getPayload();
+	}
+}
+
 void BoxProcessor::processGetAddress()
 {
 	Packet out_pack(_pac->getHeader());
@@ -564,7 +573,6 @@ void BoxProcessor::processGetAddress()
 	} catch (const std::exception& err) {
 		;
 	}
-
 }
 
 void BoxProcessor::processLogCore()
@@ -2880,6 +2888,9 @@ void BoxProcessor::onReceivePacket() {
 	
 
 	case packet::BOX_REQ_ADDRESS_INFO:		processGetAddress();		break;
+
+	case packet::BOX_NOTIFY_CHECK_DATA:		processCheckData();			break;
+
 	default:	sendErrorMessage("Request not supported");				break;
 	}
 }

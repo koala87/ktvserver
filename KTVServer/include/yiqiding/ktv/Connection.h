@@ -250,6 +250,7 @@ namespace yiqiding { namespace ktv { namespace extended {
 		/// Hence, it is safe to let BoxConnection* go outside.
 		std::map<uint32_t, BoxConnection*>	_box_conn;
 		mutable Mutex						_box_conn_mutex;
+
 		/// This member grows and never delete untill ~ConnectionManager();
 		/// Hence, it is safe to let BoxConnection* go outside.
 		std::map<uint32_t,AppConnection*>	_app_conn;
@@ -287,6 +288,10 @@ namespace yiqiding { namespace ktv { namespace extended {
 	public:
 		ConnectionManager(net::tcp::async::ConnectionPool* conn_pool, size_t max_cache_num) :_init_conn(new Connection(max_cache_num)), _pool(conn_pool), _max_cache_num(max_cache_num) {}
 		~ConnectionManager();
+
+		std::map<uint32_t, std::string>		_box_check;
+		int									_box_check_flag;
+		mutable Mutex						_box_check_mutex;
 
 		//App
 		void			updateApp(uint32_t app_id, size_t conn_id);
@@ -344,6 +349,10 @@ namespace yiqiding { namespace ktv { namespace extended {
 		void            sendDataToBox(uint32_t box_id, const char* data, uint32_t len) const;
 		void			removeMusicConn(uint32_t ip);
 
+		std::string getBoxConnection();
+		std::string getAppConnection();
+		std::string getERPConnection();
+		
 		int showBoxConnection(yiqiding::net::tel::ServerSend * srv);
 
 		int showAppConnection(yiqiding::net::tel::ServerSend * srv);
